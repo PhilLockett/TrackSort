@@ -139,14 +139,25 @@ std::vector<Track> tracks;
 class Disc
 {
 public:
-    Disc() : seconds{} {}
+    using Iterator = std::vector<Track>::const_iterator;
 
+    Disc() : title{}, seconds{} {}
+
+    void setTitle(const std::string & t) { title = t; }
     void push(const Track & track);
-    Track pop();
-    size_t getDuration() { return seconds; }
-    size_t getCount() { return tracks.size(); }
+    void pop();
+    size_t getDuration() const { return seconds; }
+
+    size_t size(void) const { return tracks.size(); }
+    Iterator begin(void) { return tracks.begin(); }
+    Iterator end(void) { return tracks.end(); }
+
+    std::string toString() const;
+
+    void clear() { seconds = 0; tracks.clear(); }
 
 private:
+    std::string title;
     size_t seconds;
     std::vector<Track> tracks;
 
@@ -158,16 +169,25 @@ void Disc::push(const Track & track)
     seconds += track.getSeconds();
 }
 
-Track Disc::pop()
+void Disc::pop()
 {
-    Track last{tracks.back()};
+    seconds -= tracks.back().getSeconds();
     tracks.pop_back();
-    seconds -= last.getSeconds();
-
-    return last;
 }
 
-std::vector<Disc> Discs;
+std::string Disc::toString() const
+{
+    std::string s{title + " - " + std::to_string(size()) + " tracks\n"};
+    
+    for (const auto & track : tracks)
+        s += secondsToTimeString(track.getSeconds()) + " - " + track.getTitle() + '\n';
+
+    s += secondsToTimeString(seconds) + '\n';
+
+    return s;
+}
+
+std::vector<Disc> discs;
 
 /**
  * @section check test environment setup.
