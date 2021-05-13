@@ -44,7 +44,15 @@ const std::string inputFile{"Tracks.txt"};
 class Track
 {
 public:
+    const std::string whitespace{" \t"};
+    const std::string digit{"0123456789"};
+
     Track(std::string line);
+
+    std::string getTitle() const { return title; }
+    size_t getSeconds() const { return seconds; }
+
+    std::string toString() const { return std::to_string(seconds) + "s - " + title; }
 
 private:
     std::string title;
@@ -53,8 +61,43 @@ private:
 
 Track::Track(std::string line)
 {
-    
+    // Get duration string from the beginning of the line.
+    auto pos = line.find_first_of(whitespace);
+    if (pos == std::string::npos)
+        return;
+
+    std::string duration(line);
+    duration.resize(pos);
+
+    // Get track title from whatever is after duration.
+    pos = line.find_first_not_of(whitespace, pos);
+    if (pos == std::string::npos)
+        return;
+
+    title = line.substr(pos);
+
+    // Break duration down to get total number of seconds from duration (H:M:S).
+    std::string buffer{duration};
+    size_t digits{};
+    seconds = 0;
+    pos = 0;
+
+    for (int i = 0; i < 3; ++i)
+    {
+        pos += digits;
+        buffer = buffer.substr(pos);
+        pos = buffer.find_first_of(digit);
+        if (pos == std::string::npos)
+            break;
+
+        seconds *= 60;
+        buffer = buffer.substr(pos);
+        seconds += std::stoi(buffer, &digits);
+    }
 }
+
+std::vector<Track> tracks;
+
 /**
  * @section check test environment setup.
  *
@@ -77,45 +120,11 @@ int main(int argc, char *argv[])
     for (const auto & line : input)
         std::cout << line << "\n";
 
-
-    const std::string whitespace{" \t"};
-    const std::string digit{"0123456789"};
     for (const auto & line : input)
-    {
-        auto pos = line.find_first_of(whitespace);
-        if (pos == std::string::npos)
-            continue;
+        tracks.emplace_back(line);
 
-        std::string duration(line);
-        duration.resize(pos);
- 
-        pos = line.find_first_not_of(whitespace, pos);
-        if (pos == std::string::npos)
-            continue;
-
-        std::string title = line.substr(pos);
-
-        std::string buffer{duration};
-        size_t digits{};
-        int seconds{};
-        pos = 0;
-
-        for (int i = 0; i < 3; ++i)
-        {
-            pos += digits;
-            buffer = buffer.substr(pos);
-            pos = buffer.find_first_of(digit);
-            if (pos == std::string::npos)
-                break;
-
-            seconds *= 60;
-            buffer = buffer.substr(pos);
-            seconds += std::stoi(buffer, &digits);
-        }
-
-
-        std::cout << seconds << "s - " << title << "\n";
-    }
+    for (const auto & track : tracks)
+        std::cout << track.toString() << "\n";
 
     return 0;
 }
