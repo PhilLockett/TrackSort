@@ -208,14 +208,45 @@ int main(int argc, char *argv[])
     TextFile input{inputFile};
     input.read();
 
+    std::cout << "Dump file\n";
     for (const auto & line : input)
         std::cout << line << "\n";
 
+    std::cout << "Process file\n";
     for (const auto & line : input)
         tracks.emplace_back(line);
 
+    std::cout << "Add tracks to discs\n";
+    Disc disc{};
     for (const auto & track : tracks)
-        std::cout << track.toString() << "\n";
+    {
+        disc.push(track);
+        if (disc.getDuration() > 614)
+        {
+            disc.pop();
+            const auto count{discs.size() + 1};
+            const std::string title{"Disc " + std::to_string(count)};
+            disc.setTitle(title);
+            discs.push_back(disc);
+            disc.clear();
+            disc.push(track);
+        }
+    }
+    if (disc.size() != 0)
+    {
+        const auto count{discs.size() + 1};
+        const std::string title{"Disc " + std::to_string(count)};
+        disc.setTitle(title);
+        discs.push_back(disc);
+        disc.clear();
+    }
+
+    std::cout << "Dump discs\n";
+    for (const auto & disc : discs)
+        std::cout << disc.toString() << "\n";
+
+    // for (const auto & track : tracks)
+    //     std::cout << secondsToTimeString(track.getSeconds()) << " | " << track.getTitle() << "\n";
 
     return 0;
 }
