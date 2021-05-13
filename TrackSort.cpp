@@ -48,13 +48,12 @@ const std::string digit{"0123456789"};
 static size_t timeStringToSeconds(std::string buffer)
 {
     size_t digits{};
-    size_t seconds = 0;
-    size_t pos = 0;
+    size_t seconds{};
+    size_t pos{};
 
     for (int i = 0; i < 3; ++i)
     {
-        pos += digits;
-        buffer = buffer.substr(pos);
+        buffer = buffer.substr(digits);
         pos = buffer.find_first_of(digit);
         if (pos == std::string::npos)
             break;
