@@ -40,13 +40,35 @@
  */
 
 const std::string inputFile{"Tracks.txt"};
+const std::string whitespace{" \t"};
+const std::string digit{"0123456789"};
+
+// Break time string (H:M:S) down to get total number of seconds.
+static size_t timeStringToSeconds(std::string buffer)
+{
+    size_t digits{};
+    size_t seconds = 0;
+    size_t pos = 0;
+
+    for (int i = 0; i < 3; ++i)
+    {
+        pos += digits;
+        buffer = buffer.substr(pos);
+        pos = buffer.find_first_of(digit);
+        if (pos == std::string::npos)
+            break;
+
+        seconds *= 60;
+        buffer = buffer.substr(pos);
+        seconds += std::stoi(buffer, &digits);
+    }
+
+    return seconds;
+}
 
 class Track
 {
 public:
-    const std::string whitespace{" \t"};
-    const std::string digit{"0123456789"};
-
     Track(std::string line);
 
     std::string getTitle() const { return title; }
@@ -68,6 +90,7 @@ Track::Track(std::string line)
 
     std::string duration(line);
     duration.resize(pos);
+    seconds = timeStringToSeconds(duration);
 
     // Get track title from whatever is after duration.
     pos = line.find_first_not_of(whitespace, pos);
@@ -75,25 +98,6 @@ Track::Track(std::string line)
         return;
 
     title = line.substr(pos);
-
-    // Break duration down to get total number of seconds from duration (H:M:S).
-    std::string buffer{duration};
-    size_t digits{};
-    seconds = 0;
-    pos = 0;
-
-    for (int i = 0; i < 3; ++i)
-    {
-        pos += digits;
-        buffer = buffer.substr(pos);
-        pos = buffer.find_first_of(digit);
-        if (pos == std::string::npos)
-            break;
-
-        seconds *= 60;
-        buffer = buffer.substr(pos);
-        seconds += std::stoi(buffer, &digits);
-    }
 }
 
 std::vector<Track> tracks;
