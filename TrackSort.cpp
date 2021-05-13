@@ -30,6 +30,7 @@
 
 #include <iostream>
 #include <string>
+#include <sstream>
 #include <vector>
 
 #include "TextFile.h"
@@ -64,6 +65,27 @@ static size_t timeStringToSeconds(std::string buffer)
     }
 
     return seconds;
+}
+
+static std::string secondsToTimeString(size_t seconds)
+{
+    std::ostringstream ss;
+
+    size_t hours{seconds / 3600};
+    seconds -= hours * 3600;
+
+    size_t minutes{seconds / 60};
+    seconds -= minutes * 60;
+
+    ss.width(2);
+    ss.fill('0');
+    ss << hours << ':';
+    ss.width(2);
+    ss << minutes << ':';
+    ss.width(2);
+    ss << seconds;
+
+    return ss.str();
 }
 
 class Track
