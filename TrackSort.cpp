@@ -44,7 +44,13 @@ const std::string inputFile{"Tracks.txt"};
 const std::string whitespace{" \t"};
 const std::string digit{"0123456789"};
 
-// Break time string (H:M:S) down to get total number of seconds.
+/**
+ * @brief Break a time string (H:M:S) down to get total number of seconds.
+ * Also handles M:S and S formats.
+ * 
+ * @param buffer time string to parse.
+ * @return size_t the equivalent number of seconds.
+ */
 static size_t timeStringToSeconds(std::string buffer)
 {
     size_t digits{};
@@ -66,7 +72,14 @@ static size_t timeStringToSeconds(std::string buffer)
     return seconds;
 }
 
-static std::string secondsToTimeString(size_t seconds)
+/**
+ * @brief Generates a time string in the form H:M:S from the given seconds.
+ * 
+ * @param seconds number of seconds to represent.
+ * @param sep optional seperator or ':' if none specified.
+ * @return std::string time string in the form H:M:S.
+ */
+static std::string secondsToTimeString(size_t seconds, const std::string & sep = ":")
 {
     std::ostringstream ss;
 
@@ -78,9 +91,9 @@ static std::string secondsToTimeString(size_t seconds)
 
     ss.width(2);
     ss.fill('0');
-    ss << hours << ':';
+    ss << hours << sep;
     ss.width(2);
-    ss << minutes << ':';
+    ss << minutes << sep;
     ss.width(2);
     ss << seconds;
 
@@ -131,6 +144,7 @@ public:
     void push(const Track & track);
     Track pop();
     size_t getDuration() { return seconds; }
+    size_t getCount() { return tracks.size(); }
 
 private:
     size_t seconds;
