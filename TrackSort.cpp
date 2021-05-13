@@ -108,7 +108,7 @@ public:
     std::string getTitle() const { return title; }
     size_t getSeconds() const { return seconds; }
 
-    std::string toString() const { return std::to_string(seconds) + "s - " + title; }
+    std::string toString() const { return std::to_string(seconds) + " - " + title; }
 
 private:
     std::string title;
