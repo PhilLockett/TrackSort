@@ -124,6 +124,38 @@ Track::Track(std::string line)
 
 std::vector<Track> tracks;
 
+class Disc
+{
+public:
+    Disc() : seconds{} {}
+
+    void push(const Track & track);
+    Track pop();
+    size_t getDuration() { return seconds; }
+
+private:
+    size_t seconds;
+    std::vector<Track> tracks;
+
+};
+
+void Disc::push(const Track & track)
+{
+    tracks.push_back(track);
+    seconds += track.getSeconds();
+}
+
+Track Disc::pop()
+{
+    Track last{tracks.back()};
+    tracks.pop_back();
+    seconds -= last.getSeconds();
+
+    return last;
+}
+
+std::vector<Disc> Discs;
+
 /**
  * @section check test environment setup.
  *
