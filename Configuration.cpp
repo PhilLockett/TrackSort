@@ -152,7 +152,7 @@ bool Configuration::isValid(bool showErrors)
     if (inputFile.string().empty())
     {
         if (showErrors)
-            std::cerr << "\nInput (or replacement) file must be specified.\n";
+            std::cerr << "\nInput file must be specified.\n";
 
         return false;
     }
@@ -160,9 +160,7 @@ bool Configuration::isValid(bool showErrors)
     if (!fs::exists(inputFile))
     {
         if (showErrors)
-        {
             std::cerr << "\nInput file " << inputFile << " does not exist.\n";
-        }
 
         return false;
     }
@@ -170,9 +168,7 @@ bool Configuration::isValid(bool showErrors)
     if (Configuration::getDuration() == 0)
     {
         if (showErrors)
-        {
-            std::cerr << "\nDisc length must be specified (in seconds)\n";
-        }
+            std::cerr << "\nDisc length must be specified\n";
         
         return false;
     }
