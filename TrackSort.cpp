@@ -201,8 +201,6 @@ int process()
  *
  */
 
-extern int initialise(int argc, char *argv[]);
-
 /**
  * @brief System entry point.
  * 
@@ -213,7 +211,7 @@ extern int initialise(int argc, char *argv[]);
 int main(int argc, char *argv[])
 {
 //- Process the command line parameters.
-    auto i = initialise(argc, argv);
+    auto i = Configuration::instance().initialise(argc, argv);
     if (i < 0)
     {
         return 1;

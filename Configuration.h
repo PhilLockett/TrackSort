@@ -56,12 +56,15 @@ private:
     void setDuration(std::string time) { Configuration::instance().seconds = timeStringToSeconds(time); }
     void setEven() { Configuration::instance().even = true; }
 
+    int help(const char * const name);
+    int parseCommandLine(int argc, char *argv[]);
+
 public:
 //- Delete the copy constructor and assignement operator.
     Configuration(const Configuration &) = delete;
     void operator=(const Configuration &) = delete;
 
-    friend int parseCommandLine(int argc, char *argv[], Configuration &config);
+    int initialise(int argc, char *argv[]);
     friend std::ostream & operator<<(std::ostream &os, const Configuration &A) { A.display(os); return os; }
 
     static Configuration & instance() { static Configuration neo; return neo; }
