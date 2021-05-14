@@ -31,10 +31,6 @@
 #include <string>
 #include <filesystem>
 
-#if !defined ELEMENTS
-#define ELEMENTS(A) (sizeof(A)/sizeof(A[0]))
-#endif
-
 
 /**
  * @section track splitter configuration data.

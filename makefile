@@ -16,6 +16,9 @@ TrackSort:	$(objects)	$(headers)
 
 format:
 	tfc -s -u -r TrackSort.cpp
+	tfc -s -u -r Initialization.cpp
+	tfc -s -u -r Configuration.cpp
+	tfc -s -u -r Configuration.h
 	tfc -s -u -r TextFile.h
 
 clean:
