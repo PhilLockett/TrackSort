@@ -21,10 +21,14 @@
  * System entry point for the track splitter.
  *
  * Build using:
- *    g++ -std=c++20 -o TrackSort TrackSort.cpp 
+ *    g++ -std=c++20 -c -o TrackSort.o TrackSort.cpp
+ *    g++ -std=c++20 -c -o Initialization.o Initialization.cpp
+ *    g++ -std=c++20 -c -o Configuration.o Configuration.cpp
+ *    g++ -std=c++20 -c -o Utilities.o Utilities.cpp
+ *    g++ -std=c++20 -o TrackSort TrackSort.o Initialization.o Configuration.o Utilities.o
  *
  * Test using:
- *    ./test
+ *    ./TrackSort -i Tracks.txt -d 19:40
  *
  */
 
