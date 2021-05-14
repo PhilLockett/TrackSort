@@ -152,9 +152,9 @@ int process()
     TextFile input{Configuration::getInputFile()};
     input.read();
 
-    std::cout << "Dump file\n";
-    for (const auto & line : input)
-        std::cout << line << "\n";
+    // std::cout << "Dump file\n";
+    // for (const auto & line : input)
+    //     std::cout << line << "\n";
 
     std::cout << "Process file\n";
     for (const auto & line : input)
