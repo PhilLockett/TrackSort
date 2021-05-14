@@ -31,6 +31,7 @@
 #include <string>
 #include <filesystem>
 
+#include "Utilities.h"
 
 /**
  * @section track splitter configuration data.
@@ -52,7 +53,7 @@ private:
     bool even;
 
     void setInputFile(std::string name) { Configuration::instance().inputFile = name; }
-    void setDuration(std::string time) { Configuration::instance().seconds = std::stoi(time); }
+    void setDuration(std::string time) { Configuration::instance().seconds = timeStringToSeconds(time); }
     void setEven() { Configuration::instance().even = true; }
 
 public:
