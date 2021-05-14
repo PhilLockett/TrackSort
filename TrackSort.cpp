@@ -18,7 +18,7 @@
  *
  * @section DESCRIPTION
  *
- * Unit test code for the 'tfc' utility.
+ * System entry point for the track splitter.
  *
  * Build using:
  *    g++ -std=c++20 -o TrackSort TrackSort.cpp 
@@ -33,6 +33,7 @@
 #include <sstream>
 #include <vector>
 
+#include "Configuration.h"
 #include "TextFile.h"
 
 
@@ -190,22 +191,13 @@ std::string Disc::toString() const
 std::vector<Disc> discs;
 
 /**
- * @section check test environment setup.
+ * @section process input file.
  *
  */
 
-
-/**
- * System entry point.
- *
- * @param  argc - command line argument count.
- * @param  argv - command line argument vector.
- * @return error value or 0 if no errors.
- */
-
-int main(int argc, char *argv[])
+int process()
 {
-    TextFile input{inputFile};
+    TextFile input{Configuration::getInputFile()};
     input.read();
 
     std::cout << "Dump file\n";
@@ -221,7 +213,7 @@ int main(int argc, char *argv[])
     for (const auto & track : tracks)
     {
         disc.push(track);
-        if (disc.getDuration() > 614)
+        if (disc.getDuration() > Configuration::getDuration())
         {
             disc.pop();
             const auto count{discs.size() + 1};
@@ -249,5 +241,47 @@ int main(int argc, char *argv[])
     //     std::cout << secondsToTimeString(track.getSeconds()) << " | " << track.getTitle() << "\n";
 
     return 0;
+}
+
+
+/**
+ * @section System entry point.
+ *
+ */
+
+extern int initialise(int argc, char *argv[]);
+
+/**
+ * @brief System entry point.
+ * 
+ * @param argc command line argument count.
+ * @param argv command line argument vector.
+ * @return int error value or 0 if no errors.
+ */
+int main(int argc, char *argv[])
+{
+//- Process the command line parameters.
+    auto i = initialise(argc, argv);
+    if (i < 0)
+    {
+        return 1;
+    }
+    else if (i > 0)
+    {
+        return 0;
+    }
+
+#if 0
+    std::cout << Configuration::instance() << '\n';
+#endif
+
+
+    if (!Configuration::isValid(true))
+    {
+        return 1;
+    }
+
+//- If all is well, generate the output.
+    return process();
 }
 

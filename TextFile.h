@@ -42,6 +42,7 @@ public:
     using Iterator = std::vector<T>::const_iterator;
 
     TextFile(const std::string & file) : fileName{file} {}
+    TextFile(const std::filesystem::path & file) : fileName{file} {}
     virtual ~TextFile(void) {}
 
     TextFile(const TextFile & other) : fileName{other.fileName}, data{other.data} {}

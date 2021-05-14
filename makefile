@@ -1,7 +1,10 @@
 # Makefile for Logger unit tests.
 objects  = TrackSort.o
+objects += Initialization.o
+objects += Configuration.o
 
 headers  = TextFile.h
+headers += Configuration.h
 
 options = -std=c++20
 
