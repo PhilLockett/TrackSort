@@ -84,16 +84,16 @@ std::vector<Track> tracks;
 
 
 /**
- * @section Define Disc class.
+ * @section Define Side class.
  *
  */
 
-class Disc
+class Side
 {
 public:
     using Iterator = std::vector<Track>::const_iterator;
 
-    Disc() : title{}, seconds{} {}
+    Side() : title{}, seconds{} {}
 
     void setTitle(const std::string & t) { title = t; }
     void push(const Track & track);
@@ -115,19 +115,19 @@ private:
 
 };
 
-void Disc::push(const Track & track)
+void Side::push(const Track & track)
 {
     tracks.push_back(track);
     seconds += track.getSeconds();
 }
 
-void Disc::pop()
+void Side::pop()
 {
     seconds -= tracks.back().getSeconds();
     tracks.pop_back();
 }
 
-std::string Disc::toString() const
+std::string Side::toString() const
 {
     std::string s{title + " - " + std::to_string(size()) + " tracks\n"};
     
@@ -139,7 +139,7 @@ std::string Disc::toString() const
     return s;
 }
 
-std::vector<Disc> discs;
+std::vector<Side> sides;
 
 
 /**
@@ -160,34 +160,34 @@ int process()
     for (const auto & line : input)
         tracks.emplace_back(line);
 
-    std::cout << "Add tracks to discs\n";
-    Disc disc{};
+    std::cout << "Add tracks to sides\n";
+    Side side{};
     for (const auto & track : tracks)
     {
-        disc.push(track);
-        if (disc.getDuration() > Configuration::getDuration())
+        side.push(track);
+        if (side.getDuration() > Configuration::getDuration())
         {
-            disc.pop();
-            const auto count{discs.size() + 1};
-            const std::string title{"Disc " + std::to_string(count)};
-            disc.setTitle(title);
-            discs.push_back(disc);
-            disc.clear();
-            disc.push(track);
+            side.pop();
+            const auto count{sides.size() + 1};
+            const std::string title{"Side " + std::to_string(count)};
+            side.setTitle(title);
+            sides.push_back(side);
+            side.clear();
+            side.push(track);
         }
     }
-    if (disc.size() != 0)
+    if (side.size() != 0)
     {
-        const auto count{discs.size() + 1};
-        const std::string title{"Disc " + std::to_string(count)};
-        disc.setTitle(title);
-        discs.push_back(disc);
-        disc.clear();
+        const auto count{sides.size() + 1};
+        const std::string title{"Side " + std::to_string(count)};
+        side.setTitle(title);
+        sides.push_back(side);
+        side.clear();
     }
 
-    std::cout << "Dump discs\n";
-    for (const auto & disc : discs)
-        std::cout << disc.toString() << "\n";
+    std::cout << "Dump sides\n";
+    for (const auto & side : sides)
+        std::cout << side.toString() << "\n";
 
     // for (const auto & track : tracks)
     //     std::cout << secondsToTimeString(track.getSeconds()) << " | " << track.getTitle() << "\n";
