@@ -225,7 +225,6 @@ int main(int argc, char *argv[])
     std::cout << Configuration::instance() << '\n';
 #endif
 
-
     if (!Configuration::isValid(true))
     {
         return 1;
