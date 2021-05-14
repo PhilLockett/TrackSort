@@ -80,7 +80,6 @@ Track::Track(std::string line)
     title = line.substr(pos);
 }
 
-std::vector<Track> tracks;
 
 
 /**
@@ -147,19 +146,27 @@ std::vector<Side> sides;
  *
  */
 
-int process()
+std::vector<Track> processInputFile()
 {
+    // std::cout << "Process input file\n";
+
     TextFile input{Configuration::getInputFile()};
     input.read();
 
-    // std::cout << "Dump file\n";
+    // std::cout << "Dump input file " << Configuration::getInputFile() <<  "\n";
     // for (const auto & line : input)
     //     std::cout << line << "\n";
 
-    std::cout << "Process file\n";
+    std::vector<Track> tracks{};
+
     for (const auto & line : input)
         tracks.emplace_back(line);
 
+    return tracks;
+}
+
+int process(const std::vector<Track> & tracks)
+{
     std::cout << "Add tracks to sides\n";
     Side side{};
     for (const auto & track : tracks)
@@ -195,6 +202,48 @@ int process()
     return 0;
 }
 
+int generate()
+{
+    std::vector<Track> tracks = processInputFile();
+    process(tracks);
+
+    return 0;
+}
+
+
+
+/**
+ * @section Process the command line parameters.
+ *
+ */
+
+/**
+ * @brief Process the command line parameters.
+ * 
+ * @param argc command line argument count.
+ * @param argv command line argument vector.
+ * @return int error value or 0 if no errors.
+ */
+int init(int argc, char *argv[])
+{
+    int i = Configuration::instance().initialise(argc, argv);
+    if (i != 0)
+    {
+        return i;
+    }
+
+#if 0
+    std::cout << Configuration::instance() << '\n';
+#endif
+
+    if (!Configuration::isValid(true))
+    {
+        return -1;
+    }
+
+    return 0;
+}
+
 
 /**
  * @section System entry point.
@@ -210,27 +259,17 @@ int process()
  */
 int main(int argc, char *argv[])
 {
-//- Process the command line parameters.
-    auto i = Configuration::instance().initialise(argc, argv);
-    if (i < 0)
+    int i = init(argc, argv);
+    if (i < 0)      // Error?
     {
         return 1;
     }
-    else if (i > 0)
+    else if (i > 0) // No further processing?
     {
         return 0;
     }
 
-#if 0
-    std::cout << Configuration::instance() << '\n';
-#endif
-
-    if (!Configuration::isValid(true))
-    {
-        return 1;
-    }
-
 //- If all is well, generate the output.
-    return process();
+    return generate();
 }
 
