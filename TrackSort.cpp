@@ -30,76 +30,17 @@
 
 #include <iostream>
 #include <string>
-#include <sstream>
 #include <vector>
 
+#include "Utilities.h"
 #include "Configuration.h"
 #include "TextFile.h"
 
 
 /**
- * @section basic utility code.
+ * @section Define Track class.
+ *
  */
-
-const std::string inputFile{"Tracks.txt"};
-const std::string whitespace{" \t"};
-const std::string digit{"0123456789"};
-
-/**
- * @brief Break a time string (H:M:S) down to get total number of seconds.
- * Also handles M:S and S formats.
- * 
- * @param buffer time string to parse.
- * @return size_t the equivalent number of seconds.
- */
-static size_t timeStringToSeconds(std::string buffer)
-{
-    size_t digits{};
-    size_t seconds{};
-    size_t pos{};
-
-    for (int i = 0; i < 3; ++i)
-    {
-        buffer = buffer.substr(digits);
-        pos = buffer.find_first_of(digit);
-        if (pos == std::string::npos)
-            break;
-
-        seconds *= 60;
-        buffer = buffer.substr(pos);
-        seconds += std::stoi(buffer, &digits);
-    }
-
-    return seconds;
-}
-
-/**
- * @brief Generates a time string in the form H:M:S from the given seconds.
- * 
- * @param seconds number of seconds to represent.
- * @param sep optional seperator or ':' if none specified.
- * @return std::string time string in the form H:M:S.
- */
-static std::string secondsToTimeString(size_t seconds, const std::string & sep = ":")
-{
-    std::ostringstream ss;
-
-    size_t hours{seconds / 3600};
-    seconds -= hours * 3600;
-
-    size_t minutes{seconds / 60};
-    seconds -= minutes * 60;
-
-    ss.width(2);
-    ss.fill('0');
-    ss << hours << sep;
-    ss.width(2);
-    ss << minutes << sep;
-    ss.width(2);
-    ss << seconds;
-
-    return ss.str();
-}
 
 class Track
 {
@@ -136,6 +77,12 @@ Track::Track(std::string line)
 }
 
 std::vector<Track> tracks;
+
+
+/**
+ * @section Define Disc class.
+ *
+ */
 
 class Disc
 {
@@ -189,6 +136,7 @@ std::string Disc::toString() const
 }
 
 std::vector<Disc> discs;
+
 
 /**
  * @section process input file.
