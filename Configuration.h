@@ -37,9 +37,9 @@
 
 
 /**
- * @section tfc configuration data.
+ * @section track splitter configuration data.
  *
- * Implementation of the tfc comand line configuration Singleton.
+ * Implementation of the track splitter comand line configuration Singleton.
  */
 
 class Configuration

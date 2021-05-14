@@ -53,12 +53,12 @@ static auto help(const char * const name)
 
 
 /**
- * Process command line parameters with help from getopt_long() and update
- * global variables.
- *
- * @param  argc - command line argument count.
- * @param  argv - command line argument vector.
- * @return error value or 0 if no errors.
+ * @brief Process command line parameters with help from getopt_long() and
+ * update global variables.
+ * 
+ * @param argc command line argument count.
+ * @param argv command line argument vector.
+ * @return int error value or 0 if no errors.
  */
 int parseCommandLine(int argc, char *argv[], Configuration &config)
 {
@@ -108,7 +108,7 @@ int parseCommandLine(int argc, char *argv[], Configuration &config)
 
 
 /**
- * @brief Initialise 'TraackSort' using command line input and ensure we only
+ * @brief Initialise 'TrackSort' using command line input and ensure we only
  * do it once.
  * 
  * @param argc command line argument count.
