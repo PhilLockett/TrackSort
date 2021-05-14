@@ -138,7 +138,6 @@ std::string Side::toString() const
     return s;
 }
 
-std::vector<Side> sides;
 
 
 /**
@@ -162,12 +161,16 @@ std::vector<Track> processInputFile()
     for (const auto & line : input)
         tracks.emplace_back(line);
 
+    // for (const auto & track : tracks)
+    //     std::cout << secondsToTimeString(track.getSeconds()) << " | " << track.getTitle() << "\n";
+
     return tracks;
 }
 
 int process(const std::vector<Track> & tracks)
 {
     std::cout << "Add tracks to sides\n";
+    std::vector<Side> sides;
     Side side{};
     for (const auto & track : tracks)
     {
@@ -195,9 +198,6 @@ int process(const std::vector<Track> & tracks)
     std::cout << "Dump sides\n";
     for (const auto & side : sides)
         std::cout << side.toString() << "\n";
-
-    // for (const auto & track : tracks)
-    //     std::cout << secondsToTimeString(track.getSeconds()) << " | " << track.getTitle() << "\n";
 
     return 0;
 }
