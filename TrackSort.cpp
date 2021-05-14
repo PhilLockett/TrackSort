@@ -167,7 +167,7 @@ std::vector<Track> processInputFile()
     return tracks;
 }
 
-int process(const std::vector<Track> & tracks)
+int process(const std::vector<Track> & tracks, size_t duration)
 {
     std::cout << "Add tracks to sides\n";
     std::vector<Side> sides;
@@ -175,7 +175,7 @@ int process(const std::vector<Track> & tracks)
     for (const auto & track : tracks)
     {
         side.push(track);
-        if (side.getDuration() > Configuration::getDuration())
+        if (side.getDuration() > duration)
         {
             side.pop();
             const auto count{sides.size() + 1};
@@ -205,7 +205,8 @@ int process(const std::vector<Track> & tracks)
 int generate()
 {
     std::vector<Track> tracks = processInputFile();
-    process(tracks);
+    auto duration = Configuration::getDuration();
+    process(tracks, duration);
 
     return 0;
 }
