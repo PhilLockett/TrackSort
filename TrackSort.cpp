@@ -97,6 +97,8 @@ public:
     void setTitle(const std::string & t) { title = t; }
     void push(const Track & track);
     void pop();
+
+    std::string getTitle() const { return title; }
     size_t getDuration() const { return seconds; }
 
     size_t size(void) const { return tracks.size(); }
@@ -167,9 +169,9 @@ std::vector<Track> processInputFile()
     return tracks;
 }
 
-int process(const std::vector<Track> & tracks, size_t duration)
+std::vector<Side> process(const std::vector<Track> & tracks, size_t duration)
 {
-    std::cout << "Add tracks to sides\n";
+    // std::cout << "Add tracks to sides\n";
     std::vector<Side> sides;
     Side side{};
     for (const auto & track : tracks)
@@ -195,18 +197,14 @@ int process(const std::vector<Track> & tracks, size_t duration)
         side.clear();
     }
 
-    std::cout << "Dump sides\n";
-    for (const auto & side : sides)
-        std::cout << side.toString() << "\n";
-
-    return 0;
+    return sides;
 }
 
 int generate()
 {
     std::vector<Track> tracks = processInputFile();
     auto duration = Configuration::getDuration();
-    process(tracks, duration);
+    std::vector<Side> sides = process(tracks, duration);
 
     return 0;
 }
