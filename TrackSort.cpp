@@ -244,10 +244,12 @@ int generate()
     const size_t duration{Configuration::getDuration()};
     std::cout << "Required duration " << secondsToTimeString(duration) << "\n";
 
+    // Calculate 'packed' sides -> minimum sides needed.
+    std::vector<Side> sides{};
+    sides = process(tracks, duration);
+
     // Calculate number of sides required.
-    size_t optimum{total / duration};
-    if (total % duration)
-        optimum++;
+    size_t optimum{sides.size()};
     if ((optimum % 2) && (Configuration::isEven()))
         optimum++;
     std::cout << "Optimum number of sides " << optimum << "\n";
@@ -260,7 +262,6 @@ int generate()
     size_t lim{15};
     size_t minimum{length};
     size_t maximum{duration};
-    std::vector<Side> sides{};
     while (minimum <= maximum)
     {
         size_t median{(minimum + maximum + 1) / 2};
