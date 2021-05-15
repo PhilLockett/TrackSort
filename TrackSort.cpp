@@ -209,12 +209,22 @@ bool leftCondition(size_t required, size_t current)
 }
 bool rightCondition(const std::vector<Side> & sides)
 {
-    if (sides.size() <= 1)
+    const auto count{sides.size() - 1};
+    if (count <= 0)
         return false;
 
-    size_t first{sides.front().getDuration()};
+    auto it{sides.begin()};
+    size_t total{};
+    for (int i = 0; i < count; ++i)
+    {
+        total += (*it).getDuration();
+        ++it;
+    }
+    size_t average{total / count};
+    std::cout << "Average length of 'full' sides " << secondsToTimeString(average) << "\n";
+
     size_t last{sides.back().getDuration()};
-    if (last < ((first * 95) / 100))
+    if (last < ((average * 95) / 100))
          return true;
 
     return false;
