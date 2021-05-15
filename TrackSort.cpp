@@ -261,7 +261,7 @@ int generate()
         for (const auto & side : sides)
             std::cout << side.getTitle() << " - " << side.size() << " tracks " << secondsToTimeString(side.getDuration()) << "\n";
 
-        if ((median-minimum == 0) || (maximum-median == 0))
+        if ((median == minimum) || (median == maximum))
         {
             break;
         }
