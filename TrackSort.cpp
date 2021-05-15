@@ -35,6 +35,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <numeric>
 
 #include "Utilities.h"
 #include "Configuration.h"
@@ -213,13 +214,9 @@ bool rightCondition(const std::vector<Side> & sides)
     if (count <= 0)
         return false;
 
-    auto it{sides.begin()};
-    size_t total{};
-    for (int i = 0; i < count; ++i)
-    {
-        total += (*it).getDuration();
-        ++it;
-    }
+    // Calculate average length of all previous sides.
+    auto lambda = [](size_t a, const Side & b) { return a + b.getDuration(); };
+    size_t total = std::accumulate(sides.begin(), std::prev(sides.end()), 0, lambda);
     size_t average{total / count};
 
     size_t last{sides.back().getDuration()};
