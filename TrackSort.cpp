@@ -248,36 +248,36 @@ int generate()
 
     // Home in on optimum side length.
     size_t lim{15};
-    size_t L{length};
-    size_t R{duration};
-    while (L <= R)
+    size_t minimum{length};
+    size_t maximum{duration};
+    while (minimum <= maximum)
     {
-        size_t m{(L + R + 1) / 2};
-        std::cout << "\nSuggested length " << secondsToTimeString(m) << "\n";
+        size_t median{(minimum + maximum + 1) / 2};
+        std::cout << "\nSuggested length " << secondsToTimeString(median) << "\n";
 
-        std::vector<Side> sides = process(tracks, m);
+        std::vector<Side> sides = process(tracks, median);
 
-        std::cout << "Dump sides\n";
+        std::cout << "Suggested sides\n";
         for (const auto & side : sides)
             std::cout << side.getTitle() << " - " << side.size() << " tracks " << secondsToTimeString(side.getDuration()) << "\n";
 
-        if ((m-L == 0) || (R-m == 0))
+        if ((median-minimum == 0) || (maximum-median == 0))
         {
             break;
         }
         else
         if (leftCondition(optimum, sides.size()))
         {
-            L = m;
-            std::cout << "Left set to " << secondsToTimeString(L) << "\n";
-            std::cout << "Right is " << secondsToTimeString(R) << "\n";
+            minimum = median;
+            std::cout << "Minimum set to " << secondsToTimeString(minimum) << "\n";
+            std::cout << "Maximum is " << secondsToTimeString(maximum) << "\n";
         }
         else
         if (rightCondition(sides))
         {
-            R = m;
-            std::cout << "Left is " << secondsToTimeString(L) << "\n";
-            std::cout << "Right set to " << secondsToTimeString(R) << "\n";
+            maximum = median;
+            std::cout << "Minimum is " << secondsToTimeString(minimum) << "\n";
+            std::cout << "Maximum set to " << secondsToTimeString(maximum) << "\n";
         }
         else
         {
