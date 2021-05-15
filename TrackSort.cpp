@@ -200,11 +200,96 @@ std::vector<Side> process(const std::vector<Track> & tracks, size_t duration)
     return sides;
 }
 
+bool leftCondition(size_t required, size_t current)
+{
+    if (required < current)
+        return true;
+
+    return false;
+}
+bool rightCondition(const std::vector<Side> & sides)
+{
+    if (sides.size() <= 1)
+        return false;
+
+    size_t first{sides.front().getDuration()};
+    size_t last{sides.back().getDuration()};
+    if (last < ((first * 95) / 100))
+         return true;
+
+    return false;
+}
 int generate()
 {
+    // Read track list file.
     std::vector<Track> tracks = processInputFile();
-    auto duration = Configuration::getDuration();
-    std::vector<Side> sides = process(tracks, duration);
+
+    // Calculate total play time.
+    size_t total{};
+    for (const auto & track : tracks)
+        total += track.getSeconds();
+    std::cout << "Total duration " << secondsToTimeString(total) << "\n";
+
+    // Get user requested maximum side length.
+    const size_t duration{Configuration::getDuration()};
+    std::cout << "Required duration " << secondsToTimeString(duration) << "\n";
+
+    // Calculate number of sides required.
+    size_t optimum{total / duration};
+    if (total % duration)
+        optimum++;
+    if ((optimum % 2) && (Configuration::isEven()))
+        optimum++;
+    std::cout << "Optimum number of sides " << optimum << "\n";
+
+    // Calculate minimum side length.
+    size_t length{total/optimum};
+    std::cout << "Minimum side length " << secondsToTimeString(length) << "\n";
+
+    // Home in on optimum side length.
+    size_t lim{15};
+    size_t L{length};
+    size_t R{duration};
+    while (L <= R)
+    {
+        size_t m{(L + R + 1) / 2};
+        std::cout << "\nSuggested length " << secondsToTimeString(m) << "\n";
+
+        std::vector<Side> sides = process(tracks, m);
+
+        std::cout << "Dump sides\n";
+        for (const auto & side : sides)
+            std::cout << side.getTitle() << " - " << side.size() << " tracks " << secondsToTimeString(side.getDuration()) << "\n";
+
+        if ((m-L == 0) || (R-m == 0))
+        {
+            break;
+        }
+        else
+        if (leftCondition(optimum, sides.size()))
+        {
+            L = m;
+            std::cout << "Left set to " << secondsToTimeString(L) << "\n";
+            std::cout << "Right is " << secondsToTimeString(R) << "\n";
+        }
+        else
+        if (rightCondition(sides))
+        {
+            R = m;
+            std::cout << "Left is " << secondsToTimeString(L) << "\n";
+            std::cout << "Right set to " << secondsToTimeString(R) << "\n";
+        }
+        else
+        {
+            break;
+        }
+
+        if (--lim == 0)
+        {
+            std::cout << "Abort!!!\n";
+            break;
+        }
+    }
 
     return 0;
 }
