@@ -221,7 +221,6 @@ bool rightCondition(const std::vector<Side> & sides)
         ++it;
     }
     size_t average{total / count};
-    std::cout << "Average length of 'full' sides " << secondsToTimeString(average) << "\n";
 
     size_t last{sides.back().getDuration()};
     if (last < ((average * 95) / 100))
@@ -231,6 +230,8 @@ bool rightCondition(const std::vector<Side> & sides)
 }
 int generate()
 {
+    const auto showDebug{Configuration::isDebug()};
+
     // Read track list file.
     std::vector<Track> tracks = processInputFile();
 
@@ -238,11 +239,13 @@ int generate()
     size_t total{};
     for (const auto & track : tracks)
         total += track.getSeconds();
-    std::cout << "Total duration " << secondsToTimeString(total) << "\n";
+    if (showDebug)
+        std::cout << "Total duration " << secondsToTimeString(total) << "\n";
 
     // Get user requested maximum side length.
     const size_t duration{Configuration::getDuration()};
-    std::cout << "Required duration " << secondsToTimeString(duration) << "\n";
+    if (showDebug)
+        std::cout << "Required duration " << secondsToTimeString(duration) << "\n";
 
     // Calculate 'packed' sides -> minimum sides needed.
     std::vector<Side> sides{};
@@ -252,11 +255,13 @@ int generate()
     size_t optimum{sides.size()};
     if ((optimum % 2) && (Configuration::isEven()))
         optimum++;
-    std::cout << "Optimum number of sides " << optimum << "\n";
+    if (showDebug)
+        std::cout << "Optimum number of sides " << optimum << "\n";
 
     // Calculate minimum side length.
     size_t length{total/optimum};
-    std::cout << "Minimum side length " << secondsToTimeString(length) << "\n";
+    if (showDebug)
+        std::cout << "Minimum side length " << secondsToTimeString(length) << "\n";
 
     // Home in on optimum side length.
     size_t lim{15};
@@ -265,14 +270,18 @@ int generate()
     while (minimum <= maximum)
     {
         size_t median{(minimum + maximum + 1) / 2};
-        std::cout << "\nSuggested length " << secondsToTimeString(median) << "\n";
+        if (showDebug)
+            std::cout << "\nSuggested length " << secondsToTimeString(median) << "\n";
 
         sides.clear();
         sides = process(tracks, median);
 
-        std::cout << "Suggested sides\n";
-        for (const auto & side : sides)
-            std::cout << side.getTitle() << " - " << side.size() << " tracks " << secondsToTimeString(side.getDuration()) << "\n";
+        if (showDebug)
+        {
+            std::cout << "Suggested sides\n";
+            for (const auto & side : sides)
+                std::cout << side.getTitle() << " - " << side.size() << " tracks " << secondsToTimeString(side.getDuration()) << "\n";
+        }
 
         if ((median == minimum) || (median == maximum))
         {
@@ -282,15 +291,21 @@ int generate()
         if (leftCondition(optimum, sides.size()))
         {
             minimum = median;
-            std::cout << "Minimum set to " << secondsToTimeString(minimum) << "\n";
-            std::cout << "Maximum is " << secondsToTimeString(maximum) << "\n";
+            if (showDebug)
+            {
+                std::cout << "Minimum set to " << secondsToTimeString(minimum) << "\n";
+                std::cout << "Maximum is " << secondsToTimeString(maximum) << "\n";
+            }
         }
         else
         if (rightCondition(sides))
         {
             maximum = median;
-            std::cout << "Minimum is " << secondsToTimeString(minimum) << "\n";
-            std::cout << "Maximum set to " << secondsToTimeString(maximum) << "\n";
+            if (showDebug)
+            {
+                std::cout << "Minimum is " << secondsToTimeString(minimum) << "\n";
+                std::cout << "Maximum set to " << secondsToTimeString(maximum) << "\n";
+            }
         }
         else
         {
@@ -299,7 +314,7 @@ int generate()
 
         if (--lim == 0)
         {
-            std::cout << "Abort!!!\n";
+            std::cerr << "Abort!!!\n";
             break;
         }
     }

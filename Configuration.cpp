@@ -83,10 +83,11 @@ int Configuration::parseCommandLine(int argc, char *argv[])
             {"input",   required_argument,0,'i'},
             {"duration",  required_argument,0,'d'},
             {"even",    no_argument,0,'e'},
+            {"debug",   no_argument,0,'x'},
             {0,0,0,0}
         };
 
-        optchr = getopt_long(argc, argv ,"hi:d:e", long_options, &option_index);
+        optchr = getopt_long(argc, argv ,"hi:d:ex", long_options, &option_index);
         if (optchr == -1)
             return 0;
 
@@ -98,7 +99,9 @@ int Configuration::parseCommandLine(int argc, char *argv[])
 
             case 'd': setDuration(std::string(optarg)); break;
 
-            case 'e': setEven();    break;
+            case 'e': setEven(); break;
+
+            case 'x': enableDebug(); break;
 
             default:
                 help(argv[0]);
