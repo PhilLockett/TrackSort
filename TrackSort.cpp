@@ -250,12 +250,14 @@ int generate()
     size_t lim{15};
     size_t minimum{length};
     size_t maximum{duration};
+    std::vector<Side> sides{};
     while (minimum <= maximum)
     {
         size_t median{(minimum + maximum + 1) / 2};
         std::cout << "\nSuggested length " << secondsToTimeString(median) << "\n";
 
-        std::vector<Side> sides = process(tracks, median);
+        sides.clear();
+        sides = process(tracks, median);
 
         std::cout << "Suggested sides\n";
         for (const auto & side : sides)
@@ -290,6 +292,10 @@ int generate()
             break;
         }
     }
+
+    std::cout << "\nThe recommended sides are\n";
+    for (const auto & side : sides)
+        std::cout << side.toString() << "\n";
 
     return 0;
 }
