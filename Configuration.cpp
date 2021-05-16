@@ -50,7 +50,7 @@ int Configuration::help(const char * const name)
     std::cout << "  Options:\n";
     std::cout << "\t-h --help \t\tThis help page and nothing else.\n";
     std::cout << "\t-i --input <file> \tInput file name containing the track listing.\n";
-    std::cout << "\t-d --duration <seconds>\t\tMaximum length of each disc.\n";
+    std::cout << "\t-d --duration <seconds>\tMaximum length of each disc.\n";
     std::cout << "\t-e --even\t\tRequire an even number of discs (sides).\n";
     std::cout << "\t-s --shuffle\t\tReorder tracks for optimal fit.\n";
 
@@ -90,7 +90,7 @@ int Configuration::parseCommandLine(int argc, char *argv[])
             {0,0,0,0}
         };
 
-        optchr = getopt_long(argc, argv ,"hi:d:ex", long_options, &option_index);
+        optchr = getopt_long(argc, argv ,"hi:d:esx", long_options, &option_index);
         if (optchr == -1)
             return 0;
 
