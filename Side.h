@@ -24,8 +24,8 @@
  * Class definitions for the track splitter.
  */
 
-#if !defined _DISC_H_INCLUDED_
-#define _DISC_H_INCLUDED_
+#if !defined _SIDE_H_INCLUDED_
+#define _SIDE_H_INCLUDED_
 
 #include <string>
 #include <vector>
@@ -86,4 +86,4 @@ private:
 
 };
 
-#endif //!defined _DISC_H_INCLUDED_
+#endif //!defined _SIDE_H_INCLUDED_
