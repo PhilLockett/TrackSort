@@ -1,5 +1,5 @@
 /**
- * @file    Utilities.h
+ * @file    Split.h
  * @author  Phil Lockett <phillockett65@gmail.com>
  * @version 1.0
  *
@@ -21,26 +21,12 @@
  * 'TrackSort' is a command-line utility for splitting tracks across multiple
  * discs.
  *
- * Basic utility code for the track splitter.
+ * Basic code for the track splitter.
  */
 
-#if !defined _UTILITIES_H_INCLUDED_
-#define _UTILITIES_H_INCLUDED_
+#if !defined _SPLIT_H_INCLUDED_
+#define _SPLIT_H_INCLUDED_
 
-#include <string>
-#include <filesystem>
+extern int splitTracksAcrossSides(void);
 
-#include "Side.h"
-
-/**
- * @section basic utility code.
- */
-
-extern const std::string whitespace;
-extern const std::string digit;
-
-extern size_t timeStringToSeconds(std::string buffer);
-extern std::string secondsToTimeString(size_t seconds, const std::string & sep = ":");
-extern std::vector<Track> buildTrackListFromInputFile(const std::filesystem::path & inputFile);
-
-#endif //!defined _UTILITIES_H_INCLUDED_
+#endif //!defined _SPLIT_H_INCLUDED_

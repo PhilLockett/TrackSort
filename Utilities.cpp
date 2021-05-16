@@ -24,9 +24,12 @@
  * Basic utility code for the track splitter.
  */
 
-#include "Utilities.h"
 #include <sstream>
+#include <vector>
 
+#include "Side.h"
+#include "Utilities.h"
+#include "TextFile.h"
 
 /**
  * @section basic utility code.
@@ -90,4 +93,23 @@ std::string secondsToTimeString(size_t seconds, const std::string & sep)
     ss << seconds;
 
     return ss.str();
+}
+
+/**
+ * @brief Builds a vector of Tracks from the input file.
+ * 
+ * @param inputFile Name of input file.
+ * @return std::vector<Track> input file represented as a list of Tracks
+ */
+std::vector<Track> buildTrackListFromInputFile(const std::filesystem::path & inputFile)
+{
+    TextFile input{inputFile};
+    input.read();
+
+    std::vector<Track> tracks{};
+
+    for (const auto & line : input)
+        tracks.emplace_back(line);
+
+    return tracks;
 }
