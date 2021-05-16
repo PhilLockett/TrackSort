@@ -24,6 +24,7 @@
  * Basic code for the track splitter.
  */
 
+#include <iostream>
 #include <string>
 #include <vector>
 #include <numeric>

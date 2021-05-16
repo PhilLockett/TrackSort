@@ -27,7 +27,6 @@
 #if !defined _CONFIGURATION_H_INCLUDED_
 #define _CONFIGURATION_H_INCLUDED_
 
-#include <iostream>
 #include <string>
 #include <filesystem>
 
