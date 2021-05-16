@@ -52,6 +52,7 @@ int Configuration::help(const char * const name)
     std::cout << "\t-i --input <file> \tInput file name containing the track listing.\n";
     std::cout << "\t-d --duration <seconds>\t\tMaximum length of each disc.\n";
     std::cout << "\t-e --even\t\tRequire an even number of discs (sides).\n";
+    std::cout << "\t-s --shuffle\t\tReorder tracks for optimal fit.\n";
 
     return 1;
 }
@@ -84,6 +85,7 @@ int Configuration::parseCommandLine(int argc, char *argv[])
             {"input",   required_argument,0,'i'},
             {"duration",  required_argument,0,'d'},
             {"even",    no_argument,0,'e'},
+            {"shuffle", no_argument,0,'s'},
             {"debug",   no_argument,0,'x'},
             {0,0,0,0}
         };
@@ -100,7 +102,9 @@ int Configuration::parseCommandLine(int argc, char *argv[])
 
             case 'd': setDuration(std::string(optarg)); break;
 
-            case 'e': setEven(); break;
+            case 'e': enableEven(); break;
+
+            case 's': enableShuffle(); break;
 
             case 'x': enableDebug(); break;
 
@@ -140,18 +144,20 @@ int Configuration::initialise(int argc, char *argv[])
 
 void Configuration::display(std::ostream &os) const
 {
-    os << "Config is " << std::string{Configuration::isValid() ? "" : "NOT "} << "valid\n";
-    os << "Input file name:  " << Configuration::getInputFile() << '\n';
-    os << "Disc duration: " << Configuration::getDuration() << "s\n";
-    if (Configuration::isEven())
-        os << "An even number of side requested.\n";
+    os << "Config is " << std::string{isValid() ? "" : "NOT "} << "valid\n";
+    os << "Input file name:  " << getInputFile() << '\n';
+    os << "Disc duration: " << getDuration() << "s\n";
+    if (isEven())
+        os << "An even number of sides requested.\n";
+    if (isShuffle())
+        os << "Optimal reordering of tracks requested.\n";
 }
 
 bool Configuration::isValid(bool showErrors)
 {
     namespace fs = std::filesystem;
 
-    const auto & inputFile{Configuration::getInputFile()};
+    const auto & inputFile{getInputFile()};
 
     if (inputFile.string().empty())
     {
@@ -169,7 +175,7 @@ bool Configuration::isValid(bool showErrors)
         return false;
     }
 
-    if (Configuration::getDuration() == 0)
+    if (getDuration() == 0)
     {
         if (showErrors)
             std::cerr << "\nDisc length must be specified\n";

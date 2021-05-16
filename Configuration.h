@@ -42,7 +42,7 @@ class Configuration
 {
 private:
 //- Hide the default constructor and destructor.
-    Configuration(void) : inputFile{}, seconds{}, even{}, debug{} {  }
+    Configuration(void) : inputFile{}, seconds{}, even{}, shuffle{}, debug{} {  }
     virtual ~Configuration(void) {}
 
     void display(std::ostream &os) const;
@@ -50,12 +50,14 @@ private:
     std::filesystem::path inputFile;
     size_t seconds;
     bool even;
+    bool shuffle;
     bool debug;
 
-    void setInputFile(std::string name) { Configuration::instance().inputFile = name; }
-    void setDuration(std::string time) { Configuration::instance().seconds = timeStringToSeconds(time); }
-    void setEven() { Configuration::instance().even = true; }
-    void enableDebug(void) {debug = true; }
+    void setInputFile(std::string name) { inputFile = name; }
+    void setDuration(std::string time) { seconds = timeStringToSeconds(time); }
+    void enableEven() { even = true; }
+    void enableShuffle() { shuffle = true; }
+    void enableDebug(void) { debug = true; }
 
     int help(const char * const name);
     int parseCommandLine(int argc, char *argv[]);
@@ -73,6 +75,7 @@ public:
     static std::filesystem::path & getInputFile(void) { return Configuration::instance().inputFile; }
     static size_t getDuration(void) { return Configuration::instance().seconds; }
     static bool isEven(void) { return Configuration::instance().even; }
+    static bool isShuffle(void) { return Configuration::instance().shuffle; }
     static bool isDebug(void) { return Configuration::instance().debug; }
 
     static bool isValid(bool showErrors = false);
