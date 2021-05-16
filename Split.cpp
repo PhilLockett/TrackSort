@@ -99,9 +99,8 @@ int splitTracksAcrossSides(void)
     std::vector<Track> tracks = buildTrackListFromInputFile(Configuration::getInputFile());
 
     // Calculate total play time.
-    size_t total{};
-    for (const auto & track : tracks)
-        total += track.getSeconds();
+    auto lambda = [](size_t a, const Track & b) { return a + b.getSeconds(); };
+    size_t total = std::accumulate(tracks.begin(), tracks.end(), 0, lambda);
     if (showDebug)
         std::cout << "Total duration " << secondsToTimeString(total) << "\n";
 
