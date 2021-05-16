@@ -115,7 +115,7 @@ int splitTracksAcrossSides(void)
 
     // Calculate number of sides required.
     size_t optimum{sides.size()};
-    if ((optimum % 2) && (Configuration::isEven()))
+    if ((optimum & 1) && (Configuration::isEven()))
         optimum++;
     if (showDebug)
         std::cout << "Optimum number of sides " << optimum << "\n";
