@@ -1,9 +1,11 @@
 # Makefile for Logger unit tests.
 objects  = TrackSort.o
+objects += Side.o
 objects += Configuration.o
 objects += Utilities.o
 
 headers  = TextFile.h
+headers += Side.h
 headers += Configuration.h
 headers += Utilities.h
 
@@ -17,6 +19,8 @@ TrackSort:	$(objects)	$(headers)
 
 format:
 	tfc -s -u -r TrackSort.cpp
+	tfc -s -u -r Side.cpp
+	tfc -s -u -r Side.h
 	tfc -s -u -r Configuration.cpp
 	tfc -s -u -r Configuration.h
 	tfc -s -u -r TextFile.h
