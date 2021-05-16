@@ -48,29 +48,20 @@
  *
  */
 
-std::vector<Track> processInputFile()
+std::vector<Track> buildTrackListFromInputFile()
 {
-    // std::cout << "Process input file\n";
-
     TextFile input{Configuration::getInputFile()};
     input.read();
-
-    // std::cout << "Dump input file " << Configuration::getInputFile() <<  "\n";
-    // for (const auto & line : input)
-    //     std::cout << line << "\n";
 
     std::vector<Track> tracks{};
 
     for (const auto & line : input)
         tracks.emplace_back(line);
 
-    // for (const auto & track : tracks)
-    //     std::cout << secondsToTimeString(track.getSeconds()) << " | " << track.getTitle() << "\n";
-
     return tracks;
 }
 
-std::vector<Side> process(const std::vector<Track> & tracks, size_t duration)
+std::vector<Side> addTracksToSides(const std::vector<Track> & tracks, size_t duration)
 {
     // std::cout << "Add tracks to sides\n";
     std::vector<Side> sides;
@@ -125,12 +116,12 @@ bool rightCondition(const std::vector<Side> & sides)
 
     return false;
 }
-int generate()
+int splitTracksAcrossSides()
 {
     const auto showDebug{Configuration::isDebug()};
 
     // Read track list file.
-    std::vector<Track> tracks = processInputFile();
+    std::vector<Track> tracks = buildTrackListFromInputFile();
 
     // Calculate total play time.
     size_t total{};
@@ -146,7 +137,7 @@ int generate()
 
     // Calculate 'packed' sides -> minimum sides needed.
     std::vector<Side> sides{};
-    sides = process(tracks, duration);
+    sides = addTracksToSides(tracks, duration);
 
     // Calculate number of sides required.
     size_t optimum{sides.size()};
@@ -171,7 +162,7 @@ int generate()
             std::cout << "\nSuggested length " << secondsToTimeString(median) << "\n";
 
         sides.clear();
-        sides = process(tracks, median);
+        sides = addTracksToSides(tracks, median);
 
         if (showDebug)
         {
@@ -283,6 +274,6 @@ int main(int argc, char *argv[])
     }
 
 //- If all is well, generate the output.
-    return generate();
+    return splitTracksAcrossSides();
 }
 
