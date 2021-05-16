@@ -25,14 +25,16 @@
  *    g++ -std=c++20 -c -o Side.o Side.cpp
  *    g++ -std=c++20 -c -o Configuration.o Configuration.cpp
  *    g++ -std=c++20 -c -o Utilities.o Utilities.cpp
+ *    g++ -std=c++20 -c -o Shuffle.o Shuffle.cpp
  *    g++ -std=c++20 -c -o Split.o Split.cpp
- *    g++ -std=c++20 -o TrackSort TrackSort.o Side.o Configuration.o Utilities.o Split.o
+ *    g++ -std=c++20 -o TrackSort TrackSort.o Side.o Configuration.o Utilities.o Shuffle.o Split.o
  *
  * Test using:
  *    ./TrackSort -i Tracks.txt -d 19:40
  *
  */
 
+#include "Shuffle.h"
 #include "Split.h"
 #include "Configuration.h"
 
@@ -95,6 +97,11 @@ int main(int argc, char *argv[])
     }
 
 //- If all is well, generate the output.
+    if (Configuration::isShuffle())
+    {
+        return shuffleTracksAcrossSides();
+    }
+
     return splitTracksAcrossSides();
 }
 

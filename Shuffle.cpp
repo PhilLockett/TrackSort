@@ -1,5 +1,5 @@
 /**
- * @file    Split.cpp
+ * @file    Shuffle.cpp
  * @author  Phil Lockett <phillockett65@gmail.com>
  * @version 1.0
  *
@@ -21,7 +21,7 @@
  * 'TrackSort' is a command-line utility for splitting tracks across multiple
  * discs.
  *
- * Basic code for the track splitter.
+ * Basic code for the track shuffling
  */
 
 #include <iostream>
@@ -29,7 +29,7 @@
 #include <vector>
 #include <numeric>
 
-#include "Split.h"
+#include "Shuffle.h"
 #include "Side.h"
 #include "Utilities.h"
 #include "Configuration.h"
@@ -91,7 +91,7 @@ static bool rightCondition(const std::vector<Side> & sides)
     return false;
 }
 
-int splitTracksAcrossSides(void)
+int shuffleTracksAcrossSides(void)
 {
     const auto showDebug{Configuration::isDebug()};
 

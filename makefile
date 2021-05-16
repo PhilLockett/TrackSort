@@ -3,12 +3,14 @@ objects  = TrackSort.o
 objects += Side.o
 objects += Configuration.o
 objects += Utilities.o
+objects += Shuffle.o
 objects += Split.o
 
 headers  = TextFile.h
 headers += Side.h
 headers += Configuration.h
 headers += Utilities.h
+headers += Shuffle.h
 headers += Split.h
 
 options = -std=c++20
@@ -28,6 +30,8 @@ format:
 	tfc -s -u -r TextFile.h
 	tfc -s -u -r Utilities.cpp
 	tfc -s -u -r Utilities.h
+	tfc -s -u -r Shuffle.cpp
+	tfc -s -u -r Shuffle.h
 	tfc -s -u -r Split.cpp
 	tfc -s -u -r Split.h
 
