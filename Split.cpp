@@ -41,10 +41,12 @@ static std::vector<Side> addTracksToSides(const std::vector<Track> & tracks, siz
     Side side{};
     for (const auto & track : tracks)
     {
-        side.push(track);
-        if (side.getDuration() > duration)
+        if (side.getDuration() + track.getSeconds() <= duration)
         {
-            side.pop();
+            side.push(track);
+        }
+        else
+        {
             const auto count{sides.size() + 1};
             const std::string title{"Side " + std::to_string(count)};
             side.setTitle(title);

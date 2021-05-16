@@ -26,6 +26,7 @@
 
 #include <iostream>
 #include <string>
+#include <iterator>
 #include <vector>
 #include <numeric>
 
@@ -34,33 +35,79 @@
 #include "Utilities.h"
 #include "Configuration.h"
 
-static std::vector<Side> addTracksToSides(const std::vector<Track> & tracks, size_t duration)
+static std::vector<Side> addTracksToSides(const std::vector<Track> & tracks, size_t duration, size_t count)
 {
     // std::cout << "Add tracks to sides\n";
     std::vector<Side> sides;
+    sides.reserve(count);
     Side side{};
-    for (const auto & track : tracks)
+    for (int i = 0; i < count; ++i)
     {
-        side.push(track);
-        if (side.getDuration() > duration)
-        {
-            side.pop();
-            const auto count{sides.size() + 1};
-            const std::string title{"Side " + std::to_string(count)};
-            side.setTitle(title);
-            sides.push_back(side);
-            side.clear();
-            side.push(track);
-        }
-    }
-    if (side.size() != 0)
-    {
-        const auto count{sides.size() + 1};
-        const std::string title{"Side " + std::to_string(count)};
+        const std::string title{"Side " + std::to_string(i+1)};
         side.setTitle(title);
         sides.push_back(side);
-        side.clear();
     }
+
+    bool forward{true};
+    int direction{1};
+    std::vector<Side>::iterator forth{sides.begin()};
+    std::vector<Side>::reverse_iterator back{sides.rbegin()};
+    std::vector<Track>::const_iterator track{tracks.begin()};
+    for (int attempts = 0; attempts < count; ++attempts)
+    {
+        if (forward)
+        {
+            (*forth).push(*track);
+            if ((*forth).getDuration() > duration)
+            {
+                (*forth).pop();
+                continue;
+            }
+
+            std::advance(track, 1);
+            if (track == tracks.end())
+                break;
+
+            std::advance(forth, 1);
+            attempts = 0;
+
+            if (forth == sides.end())
+            {
+                forward = false;
+                forth = sides.begin();
+            }
+        }
+        else
+        {
+            (*back).push(*track);
+            if ((*back).getDuration() > duration)
+            {
+                (*back).pop();
+                continue;
+            }
+
+            std::advance(track, 1);
+            if (track == tracks.end())
+                break;
+
+            std::advance(back, 1);
+            attempts = 0;
+
+            if (back == sides.rend())
+            {
+                forward = true;
+                back = sides.rbegin();
+            }
+        }
+    }
+    // if (side.size() != 0)
+    // {
+    //     const auto count{sides.size() + 1};
+    //     const std::string title{"Side " + std::to_string(count)};
+    //     side.setTitle(title);
+    //     sides.push_back(side);
+    //     side.clear();
+    // }
 
     return sides;
 }
@@ -95,8 +142,14 @@ int shuffleTracksAcrossSides(void)
 {
     const auto showDebug{Configuration::isDebug()};
 
-    // Read track list file.
+    // Read track list file and sort it, longest to shortest.
     std::vector<Track> tracks = buildTrackListFromInputFile(Configuration::getInputFile());
+    std::sort(tracks.begin(), tracks.end(), [](const Track & a, const Track & b) {
+        return a.getSeconds() > b.getSeconds();
+    });
+
+    // for (const auto & track : tracks)
+    //     std::cout << track.toString() << "\n";
 
     // Calculate total play time.
     auto lambda = [](size_t a, const Track & b) { return a + b.getSeconds(); };
@@ -111,20 +164,28 @@ int shuffleTracksAcrossSides(void)
 
     // Calculate 'packed' sides -> minimum sides needed.
     std::vector<Side> sides{};
-    sides = addTracksToSides(tracks, duration);
 
     // Calculate number of sides required.
-    size_t optimum{sides.size()};
-    if ((optimum % 2) && (Configuration::isEven()))
+    size_t optimum{total / duration};
+    if (total % duration)
         optimum++;
+    if ((optimum & 1) && (Configuration::isEven()))
+        optimum++;
+    std::cout << "Optimum number of sides " << optimum << "\n";
+
+    sides = addTracksToSides(tracks, duration, optimum);
     if (showDebug)
-        std::cout << "Optimum number of sides " << optimum << "\n";
+    {
+        std::cout << "Packed sides\n";
+        for (const auto & side : sides)
+            std::cout << side.getTitle() << " - " << side.size() << " tracks " << secondsToTimeString(side.getDuration()) << "\n";
+    }
 
     // Calculate minimum side length.
     size_t length{total/optimum};
     if (showDebug)
         std::cout << "Minimum side length " << secondsToTimeString(length) << "\n";
-
+#if 0
     // Home in on optimum side length.
     size_t lim{15};
     size_t minimum{length};
@@ -180,7 +241,7 @@ int shuffleTracksAcrossSides(void)
             break;
         }
     }
-
+#endif
     std::cout << "\nThe recommended sides are\n";
     for (const auto & side : sides)
         std::cout << side.toString() << "\n";
