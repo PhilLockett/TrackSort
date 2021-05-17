@@ -34,6 +34,14 @@
 #include "Utilities.h"
 #include "Configuration.h"
 
+/**
+ * @brief Splits a list of tracks across multiple sides using the upper side
+ * length limit of 'duration'.
+ * 
+ * @param tracks to split across sides.
+ * @param duration limit of a side.
+ * @return std::vector<Side> list of sides containing the tracks.
+ */
 static std::vector<Side> addTracksToSides(const std::vector<Track> & tracks, size_t duration)
 {
     // std::cout << "Add tracks to sides\n";
@@ -67,7 +75,16 @@ static std::vector<Side> addTracksToSides(const std::vector<Track> & tracks, siz
     return sides;
 }
 
-static bool leftCondition(size_t required, size_t current)
+/**
+ * @brief Determine if the minimum side length is too short by checking if the
+ * current number of sides exceeds the required number of sides.
+ * 
+ * @param required number of sides.
+ * @param current number of sides.
+ * @return true if the current number of sides exceeds the required.
+ * @return false otherwise.
+ */
+static bool isMinimumTooShort(size_t required, size_t current)
 {
     if (required < current)
         return true;
@@ -75,7 +92,16 @@ static bool leftCondition(size_t required, size_t current)
     return false;
 }
 
-static bool rightCondition(const std::vector<Side> & sides)
+/**
+ * @brief Determine if the maximum side length is too long by checking that the
+ * length of the last side is close to the average length of all previous
+ * sides. If it isn't, then the previous sides are too greedy.
+ * 
+ * @param sides currently being considered.
+ * @return true if last side doesn't hold enough tracks.
+ * @return false otherwise.
+ */
+static bool isMaximumTooLong(const std::vector<Side> & sides)
 {
     const auto count{sides.size() - 1};
     if (count <= 0)
@@ -93,6 +119,12 @@ static bool rightCondition(const std::vector<Side> & sides)
     return false;
 }
 
+/**
+ * @brief Reads the track list from the user specified file and optimally
+ * splits them across multiple sides so that the sides have similar lengths.
+ * 
+ * @return int error value of 0.
+ */
 int splitTracksAcrossSides(void)
 {
     const auto showDebug{Configuration::isDebug()};
@@ -152,7 +184,7 @@ int splitTracksAcrossSides(void)
             break;
         }
         else
-        if (leftCondition(optimum, sides.size()))
+        if (isMinimumTooShort(optimum, sides.size()))
         {
             minimum = median;
             if (showDebug)
@@ -162,7 +194,7 @@ int splitTracksAcrossSides(void)
             }
         }
         else
-        if (rightCondition(sides))
+        if (isMaximumTooLong(sides))
         {
             maximum = median;
             if (showDebug)
