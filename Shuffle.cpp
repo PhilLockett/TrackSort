@@ -49,7 +49,7 @@ public:
     const Track * getTp(void) const { return tp; };
 
 };
-static std::vector<Side> addTracksToSides(const std::vector<Track> & tracks, size_t duration, size_t count)
+static std::vector<Side> addTracksToSides(const std::vector<Track> & tracks, const size_t duration, const size_t sideCount)
 {
     const auto trackCount{tracks.size()};
     std::unique_ptr<Used[]> tracker = std::make_unique<Used[]>(trackCount);
@@ -61,62 +61,46 @@ static std::vector<Side> addTracksToSides(const std::vector<Track> & tracks, siz
 
     // std::cout << "Add tracks to sides\n";
     std::vector<Side> sides;
-    sides.reserve(count);
+    sides.reserve(sideCount);
     Side side{};
-    for (int i = 0; i < count; ++i)
+    for (int i = 0; i < sideCount; ++i)
     {
         const std::string title{"Side " + std::to_string(i+1)};
+        // std::cout << "title " << title << "\n";
         side.setTitle(title);
         sides.push_back(side);
     }
 
     bool forward{true};
-    int direction{1};
-    std::vector<Side>::iterator forth{sides.begin()};
-    std::vector<Side>::reverse_iterator back{sides.rbegin()};
-    int index{};
-    for (int attempts = 0; attempts < count; ++attempts)
+    int trackIndex{};
+    int sideIndex{};
+    for (int attempts = 1; attempts <= sideCount; ++attempts)
     {
-        auto tp{tracker[index].getTp()};
-        if (forward)
+        std::cout << "attempts " << attempts << "  trackIndex " << trackIndex << "  sideIndex " << sideIndex << "  forward " << forward << "\n";
+        auto tp{tracker[trackIndex].getTp()};
+        auto sp{&sides[sideIndex]};
+        if (sp->getDuration() + tp->getSeconds() <= duration)
         {
-            if ((*forth).getDuration() + tp->getSeconds() > duration)
-            {
-                continue;
-            }
-
-            (*forth).push(*tp);
-            if (++index >= trackCount)
+            sp->push(*tp);
+            if (++trackIndex >= trackCount)
                 break;
 
-            std::advance(forth, 1);
             attempts = 0;
+        }
 
-            if (forth == sides.end())
-            {
+        if (forward)
+        {
+            if (sideIndex == sideCount-1)
                 forward = false;
-                forth = sides.begin();
-            }
+            else
+                ++sideIndex;
         }
         else
         {
-            if ((*back).getDuration() + tp->getSeconds() > duration)
-            {
-                continue;
-            }
-
-            (*back).push(*tp);
-            if (++index >= trackCount)
-                break;
-
-            std::advance(back, 1);
-            attempts = 0;
-
-            if (back == sides.rend())
-            {
+            if (sideIndex == 0)
                 forward = true;
-                back = sides.rbegin();
-            }
+            else
+                --sideIndex;
         }
     }
     // if (side.size() != 0)
