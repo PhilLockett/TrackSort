@@ -194,7 +194,8 @@ int shuffleTracksAcrossSides(void)
     {
         std::cout << "Packed sides\n";
         for (const auto & side : find)
-            std::cout << side.getTitle() << " - " << side.size() << " tracks " << secondsToTimeString(side.getDuration()) << "\n";
+            std::cout << side.getTitle() << " - " << side.size() << " tracks " <<
+             secondsToTimeString(side.getDuration()) << " (" << duration-side.getDuration() << ")\n";
 
     }
 
