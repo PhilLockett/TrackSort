@@ -36,19 +36,6 @@
 #include "Configuration.h"
 
 
-class Used
-{
-    const Track * tp{};
-    bool used{};
-
-public:
-    void init(const Track & track) { tp = &track; }
-    void setUsed(bool state = true) { used = state; }
-    bool isUsed(void) const { return used; }
-    size_t getSeconds(void) const { return tp->getSeconds(); }
-    const Track * getTp(void) const { return tp; };
-
-};
 class Finder
 {
 public:
@@ -76,19 +63,14 @@ private:
     int sideIndex;
     bool success;
 
-    std::unique_ptr<Used[]> tracker;
+    const std::vector<Track> & tracks;
     std::vector<Side> sides;
 };
 
-Finder::Finder(const std::vector<Track> & tracks, const size_t dur, const size_t count) :
-    duration{dur}, sideCount{count}, trackCount{tracks.size()},
-    forward{true}, trackIndex{}, sideIndex{}, success{}
+Finder::Finder(const std::vector<Track> & trackList, const size_t dur, const size_t count) :
+    duration{dur}, sideCount{count}, trackCount{trackList.size()},
+    forward{true}, trackIndex{}, sideIndex{}, success{}, tracks{trackList}, sides{}
 {
-    tracker = std::make_unique<Used[]>(trackCount);
-    auto it = tracks.begin();
-    for (int i = 0; i < trackCount; ++i, ++it)
-        tracker[i].init(*it);
-
     sides.reserve(sideCount);
     Side side{};
     for (int i = 0; i < sideCount; ++i)
@@ -108,16 +90,16 @@ bool Finder::look(int track)
     {
         // std::cout << "track " << track << "  side " << side << "\n";
 
-        auto tp{tracker[track].getTp()};
-        auto sp{&sides[side]};
-        if (sp->getDuration() + tp->getSeconds() <= duration)
+        auto & tp{tracks[track]};
+        auto & sp{sides[side]};
+        if (sp.getDuration() + tp.getSeconds() <= duration)
         {
-            sp->push(*tp);
+            sp.push(tp);
 
             if (look(track+1))
                 return true;
 
-            sp->pop();
+            sp.pop();
         }
     }
 
@@ -127,7 +109,7 @@ bool Finder::look(int track)
 bool Finder::addTracksToSides(void)
 {
     success = look(0);
-    success = true;
+
     return success;
 }
 
