@@ -50,24 +50,23 @@ private:
 
 template<typename T>
 Indexer<T>::Indexer(T first, T limit) :
-    step{1}, index{(first / 2) % limit}, start{0}, end{limit}
+    step{1}, index{(first / 2) % limit}, start{0}, end{limit-1}
 {
     if (first & 1)
     {
         step = -1;
         index = limit - 1 - index;
-        start = limit - 1;
-        end = -1;
+		std::swap(start, end);
     }
 }
 
 template<typename T>
 T Indexer<T>::inc()
 {
-	index += step;
-
 	if (index == end)
 		index = start;
+    else
+    	index += step;
 
 	return index;
 }
