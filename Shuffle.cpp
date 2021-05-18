@@ -41,21 +41,21 @@ class Indexer
 {
 public:
 	Indexer(T first, T limit);
-	T operator()(void) const { return i; }
+	T operator()(void) const { return index; }
 	T inc();
 
 private:
-    T step, i, start, end;
+    T step, index, start, end;
 };
 
 template<typename T>
 Indexer<T>::Indexer(T first, T limit) :
-    step{1}, i{(first / 2) % limit}, start{0}, end{limit}
+    step{1}, index{(first / 2) % limit}, start{0}, end{limit}
 {
     if (first & 1)
     {
         step = -1;
-        i = limit - 1 - i;
+        index = limit - 1 - index;
         start = limit - 1;
         end = -1;
     }
@@ -64,12 +64,12 @@ Indexer<T>::Indexer(T first, T limit) :
 template<typename T>
 T Indexer<T>::inc()
 {
-	i += step;
+	index += step;
 
-	if (i == end)
-		i = start;
+	if (index == end)
+		index = start;
 
-	return i;
+	return index;
 }
 
 class Finder
