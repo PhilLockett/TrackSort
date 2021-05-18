@@ -49,70 +49,86 @@ public:
     const Track * getTp(void) const { return tp; };
 
 };
-static std::vector<Side> addTracksToSides(const std::vector<Track> & tracks, const size_t duration, const size_t sideCount)
+class Finder
 {
-    const auto trackCount{tracks.size()};
-    std::unique_ptr<Used[]> tracker = std::make_unique<Used[]>(trackCount);
+public:
+    using Iterator = std::vector<Side>::const_iterator;
+
+    Finder(const std::vector<Track> &, const size_t, const size_t);
+
+    bool addTracksToSides(void);
+
+    bool isSuccessful(void) const { return success; }
+
+    size_t size(void) const { return sides.size(); }
+    Iterator begin(void) { return sides.begin(); }
+    Iterator end(void) { return sides.end(); }
+
+private:
+    bool look(int track);
+
+    const size_t duration;
+    const size_t sideCount;
+    const size_t trackCount;
+
+    bool forward;
+    int trackIndex;
+    int sideIndex;
+    bool success;
+
+    std::unique_ptr<Used[]> tracker;
+    std::vector<Side> sides;
+};
+
+Finder::Finder(const std::vector<Track> & tracks, const size_t dur, const size_t count) :
+    duration{dur}, sideCount{count}, trackCount{tracks.size()},
+    forward{true}, trackIndex{}, sideIndex{}, success{}
+{
+    tracker = std::make_unique<Used[]>(trackCount);
     auto it = tracks.begin();
     for (int i = 0; i < trackCount; ++i, ++it)
-    {
         tracker[i].init(*it);
-    }
 
-    // std::cout << "Add tracks to sides\n";
-    std::vector<Side> sides;
     sides.reserve(sideCount);
     Side side{};
     for (int i = 0; i < sideCount; ++i)
     {
         const std::string title{"Side " + std::to_string(i+1)};
-        // std::cout << "title " << title << "\n";
         side.setTitle(title);
         sides.push_back(side);
     }
+}
 
-    bool forward{true};
-    int trackIndex{};
-    int sideIndex{};
-    for (int attempts = 1; attempts <= sideCount; ++attempts)
+bool Finder::look(int track)
+{
+    if (track == trackCount)
+        return true;
+
+    for (int side = 0; side < sideCount; ++side)
     {
-        std::cout << "attempts " << attempts << "  trackIndex " << trackIndex << "  sideIndex " << sideIndex << "  forward " << forward << "\n";
-        auto tp{tracker[trackIndex].getTp()};
-        auto sp{&sides[sideIndex]};
+        // std::cout << "track " << track << "  side " << side << "\n";
+
+        auto tp{tracker[track].getTp()};
+        auto sp{&sides[side]};
         if (sp->getDuration() + tp->getSeconds() <= duration)
         {
             sp->push(*tp);
-            if (++trackIndex >= trackCount)
-                break;
 
-            attempts = 0;
-        }
+            if (look(track+1))
+                return true;
 
-        if (forward)
-        {
-            if (sideIndex == sideCount-1)
-                forward = false;
-            else
-                ++sideIndex;
-        }
-        else
-        {
-            if (sideIndex == 0)
-                forward = true;
-            else
-                --sideIndex;
+            sp->pop();
         }
     }
-    // if (side.size() != 0)
-    // {
-    //     const auto count{sides.size() + 1};
-    //     const std::string title{"Side " + std::to_string(count)};
-    //     side.setTitle(title);
-    //     sides.push_back(side);
-    //     side.clear();
-    // }
 
-    return sides;
+    return false;
+}
+
+bool Finder::addTracksToSides(void)
+{
+    success = look(0);
+    success = true;
+    return success;
 }
 
 int shuffleTracksAcrossSides(void)
@@ -140,7 +156,7 @@ int shuffleTracksAcrossSides(void)
         std::cout << "Required duration " << secondsToTimeString(duration) << "\n";
 
     // Calculate 'packed' sides -> minimum sides needed.
-    std::vector<Side> sides{};
+    // std::vector<Side> sides{};
 
     // Calculate number of sides required.
     size_t optimum{total / duration};
@@ -150,13 +166,18 @@ int shuffleTracksAcrossSides(void)
         optimum++;
     std::cout << "Optimum number of sides " << optimum << "\n";
 
-    sides = addTracksToSides(tracks, duration, optimum);
-    if (showDebug)
+
+
+    Finder find{tracks, duration, optimum};
+    find.addTracksToSides();
+    if ((find.isSuccessful()) && (showDebug))
     {
         std::cout << "Packed sides\n";
-        for (const auto & side : sides)
+        for (const auto & side : find)
             std::cout << side.getTitle() << " - " << side.size() << " tracks " << secondsToTimeString(side.getDuration()) << "\n";
+
     }
+
 
     // Calculate minimum side length.
     size_t length{total/optimum};
@@ -164,7 +185,7 @@ int shuffleTracksAcrossSides(void)
         std::cout << "Minimum side length " << secondsToTimeString(length) << "\n";
 
     std::cout << "\nThe recommended sides are\n";
-    for (const auto & side : sides)
+    for (const auto & side : find)
         std::cout << side.toString() << "\n";
 
     return 0;
