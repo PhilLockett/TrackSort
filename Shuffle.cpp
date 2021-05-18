@@ -36,6 +36,42 @@
 #include "Configuration.h"
 
 
+template<typename T=int>
+class Indexer
+{
+public:
+	Indexer(T first, T limit);
+	T operator()(void) const { return i; }
+	T inc();
+
+private:
+    T step, i, start, end;
+};
+
+template<typename T>
+Indexer<T>::Indexer(T first, T limit) :
+    step{1}, i{(first / 2) % limit}, start{0}, end{limit}
+{
+    if (first & 1)
+    {
+        step = -1;
+        i = limit - 1 - i;
+        start = limit - 1;
+        end = -1;
+    }
+}
+
+template<typename T>
+T Indexer<T>::inc()
+{
+	i += step;
+
+	if (i == end)
+		i = start;
+
+	return i;
+}
+
 class Finder
 {
 public:
@@ -86,12 +122,14 @@ bool Finder::look(int track)
     if (track == trackCount)
         return true;
 
-    for (int side = 0; side < sideCount; ++side)
+    Indexer side{track, (int)sideCount};
+
+    for (int i = 0; i < sideCount; ++i, side.inc())
     {
         // std::cout << "track " << track << "  side " << side << "\n";
 
         auto & tp{tracks[track]};
-        auto & sp{sides[side]};
+        auto & sp{sides[side()]};
         if (sp.getDuration() + tp.getSeconds() <= duration)
         {
             sp.push(tp);
