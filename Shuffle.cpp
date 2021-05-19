@@ -29,6 +29,7 @@
 #include <iterator>
 #include <vector>
 #include <numeric>
+#include <cmath>
 
 #include "Shuffle.h"
 #include "Side.h"
@@ -79,8 +80,11 @@ public:
     Finder(const std::vector<Track> &, const size_t, const size_t);
 
     bool addTracksToSides(void);
-
     bool isSuccessful(void) const { return success; }
+    bool show(std::ostream & os) const;
+    bool showAll(std::ostream & os) const;
+
+    double deviation() const;
 
     size_t size(void) const { return sides.size(); }
     Iterator begin(void) { return sides.begin(); }
@@ -150,6 +154,43 @@ bool Finder::addTracksToSides(void)
     return success;
 }
 
+bool Finder::show(std::ostream & os) const
+{
+    for (const auto & side : sides)
+        os << side.getTitle() << " - " << side.size() << " tracks " <<
+            secondsToTimeString(side.getDuration()) << " (" << duration-side.getDuration() << ")\n";
+
+    return success;
+}
+
+bool Finder::showAll(std::ostream & os) const
+{
+    for (const auto & side : sides)
+        os << side.toString() << "\n";
+
+    return success;
+}
+
+double Finder::deviation() const
+{
+    // Calculate total play time.
+    auto lambdaSum = [](size_t a, const Side & b) { return a + b.getDuration(); };
+    size_t total = std::accumulate(sides.begin(), sides.end(), 0, lambdaSum);
+	// std::cout << "total " << total << "\n";
+
+    double mean{(double)total / sideCount};
+	// std::cout << "mean " << mean << "\n";
+
+    auto lambdaVariance = [mean](double a, const Side & b) { return a + std::pow((mean - b.getDuration()), 2); };
+    double variance = std::accumulate(sides.begin(), sides.end(), 0.0, lambdaVariance);
+	// std::cout << "variance " << variance << "\n";
+    variance /= sideCount;
+	// std::cout << "variance " << variance << "\n";
+
+    return std::sqrt(variance);
+}
+
+
 int shuffleTracksAcrossSides(void)
 {
     const auto showDebug{Configuration::isDebug()};
@@ -192,10 +233,7 @@ int shuffleTracksAcrossSides(void)
     if ((find.isSuccessful()) && (showDebug))
     {
         std::cout << "Packed sides\n";
-        for (const auto & side : find)
-            std::cout << side.getTitle() << " - " << side.size() << " tracks " <<
-             secondsToTimeString(side.getDuration()) << " (" << duration-side.getDuration() << ")\n";
-
+        find.show(std::cout);
     }
 
 
@@ -204,9 +242,11 @@ int shuffleTracksAcrossSides(void)
     if (showDebug)
         std::cout << "Minimum side length " << secondsToTimeString(length) << "\n";
 
-    std::cout << "\nThe recommended sides are\n";
-    for (const auto & side : find)
-        std::cout << side.toString() << "\n";
+    if (find.isSuccessful())
+    {
+        std::cout << "\nThe recommended sides are\n";
+        // find.showAll(std::cout);
+    }
 
     return 0;
 }
