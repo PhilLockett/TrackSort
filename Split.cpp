@@ -107,13 +107,8 @@ static bool isMaximumTooLong(const std::vector<Side> & sides)
     if (count <= 0)
         return false;
 
-    // Calculate average length of all previous sides.
-    auto lambda = [](size_t a, const Side & b) { return a + b.getDuration(); };
-    size_t total = std::accumulate(sides.begin(), std::prev(sides.end()), 0, lambda);
-    size_t average{total / count};
-
-    size_t last{sides.back().getDuration()};
-    if (last < ((average * 95) / 100))
+    // Calculate the standard deviation of all side lengths.
+    if (deviation(sides) > 10.0)
          return true;
 
     return false;

@@ -30,6 +30,8 @@
 #include <string>
 #include <filesystem>
 #include <vector>
+#include <cmath>
+#include <numeric>
 
 #include "Side.h"
 
@@ -43,5 +45,33 @@ extern const std::string digit;
 extern size_t timeStringToSeconds(std::string buffer);
 extern std::string secondsToTimeString(size_t seconds, const std::string & sep = ":");
 extern std::vector<Track> buildTrackListFromInputFile(const std::filesystem::path & inputFile);
+
+/**
+ * @brief Calculate the standard deviation of the lengths of the given list of
+ * sides.
+ * 
+ * @param list to use as data.
+ * @return double the calculated the standard deviation.
+ */
+#include <iostream>
+template<typename T=std::vector<Side>>
+double deviation(const T & list)
+{
+    // Calculate total play time.
+    auto lambdaSum = [](size_t a, const Side & b) { return a + b.getDuration(); };
+    size_t total = std::accumulate(list.begin(), list.end(), 0, lambdaSum);
+	// std::cout << "total " << total << "\n";
+
+    double mean{(double)total / list.size()};
+	// std::cout << "mean " << mean << "\n";
+
+    auto lambdaVariance = [mean](double a, const Side & b) { return a + std::pow((mean - b.getDuration()), 2); };
+    double variance = std::accumulate(list.begin(), list.end(), 0.0, lambdaVariance);
+	// std::cout << "variance " << variance << "\n";
+    variance /= list.size();
+	// std::cout << "variance " << variance << "\n";
+
+    return std::sqrt(variance);
+}
 
 #endif //!defined _UTILITIES_H_INCLUDED_
