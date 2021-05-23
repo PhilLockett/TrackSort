@@ -30,6 +30,9 @@
 #include <vector>
 #include <numeric>
 #include <cmath>
+#include <limits>
+#include <thread>
+#include <chrono>
 
 #include "Shuffle.h"
 #include "Side.h"
@@ -64,18 +67,68 @@ Indexer<T>::Indexer(T first, T limit) :
 template<typename T>
 T Indexer<T>::inc()
 {
-	if (index == end)
-		index = start;
+    if (index == end)
+        index = start;
     else
-    	index += step;
+        index += step;
 
-	return index;
+    return index;
+}
+
+class SideRef
+{
+public:
+    SideRef(const std::vector<Track> & trackList) : title{}, seconds{}, tracks{trackList} {}
+
+    void setTitle(const std::string & t) { title = t; }
+    void push(size_t);
+    void pop();
+    std::string toString() const;
+
+    std::string getTitle() const { return title; }
+    size_t getDuration() const { return seconds; }
+
+    size_t size(void) const { return trackRefs.size(); }
+    void clear() { seconds = 0; trackRefs.clear(); }
+
+    std::vector<size_t> getRefs() const { return trackRefs; }
+
+private:
+    std::string title;
+    size_t seconds;
+    const std::vector<Track> & tracks;
+    std::vector<size_t> trackRefs;
+
+};
+
+void SideRef::push(size_t track)
+{
+    trackRefs.push_back(track);
+    seconds += tracks[track].getSeconds();
+}
+
+void SideRef::pop()
+{
+    seconds -= tracks[trackRefs.back()].getSeconds();
+    trackRefs.pop_back();
+}
+
+std::string SideRef::toString() const
+{
+    std::string s{title + " - " + std::to_string(size()) + " tracks\n"};
+    
+    for (const auto track : trackRefs)
+        s += secondsToTimeString(tracks[track].getSeconds()) + " - " + tracks[track].getTitle() + '\n';
+
+    s += secondsToTimeString(seconds) + '\n';
+
+    return s;
 }
 
 class Finder
 {
 public:
-    using Iterator = std::vector<Side>::const_iterator;
+    using Iterator = std::vector<SideRef>::const_iterator;
 
     Finder(const std::vector<Track> &, const size_t, const size_t);
 
@@ -84,14 +137,14 @@ public:
     bool show(std::ostream & os) const;
     bool showAll(std::ostream & os) const;
 
-    double deviation() const;
-
     size_t size(void) const { return sides.size(); }
     Iterator begin(void) { return sides.begin(); }
     Iterator end(void) { return sides.end(); }
 
 private:
     bool look(int track);
+    bool snapshot(double latest);
+    static void waiter(void);
 
     const size_t duration;
     const size_t sideCount;
@@ -101,17 +154,24 @@ private:
     int trackIndex;
     int sideIndex;
     bool success;
+    size_t lim;
 
     const std::vector<Track> & tracks;
-    std::vector<Side> sides;
+    std::vector<SideRef> sides;
+
+    static size_t working;
+    double dev;
+    std::vector<std::vector<size_t>> best;
 };
 
 Finder::Finder(const std::vector<Track> & trackList, const size_t dur, const size_t count) :
     duration{dur}, sideCount{count}, trackCount{trackList.size()},
-    forward{true}, trackIndex{}, sideIndex{}, success{}, tracks{trackList}, sides{}
+    forward{true}, trackIndex{}, sideIndex{}, success{}, lim{150},  tracks{trackList}, sides{},
+    dev{std::numeric_limits<double>::max()}, best{}
 {
     sides.reserve(sideCount);
-    Side side{};
+    best.reserve(sideCount);
+    SideRef side{trackList};
     for (int i = 0; i < sideCount; ++i)
     {
         const std::string title{"Side " + std::to_string(i+1)};
@@ -119,15 +179,47 @@ Finder::Finder(const std::vector<Track> & trackList, const size_t dur, const siz
         sides.push_back(side);
     }
 }
+size_t Finder::working;
+
+
+bool Finder::snapshot(double latest)
+{
+    dev = latest;
+    best.clear();
+    for (const auto & side : sides)
+        best.push_back(side.getRefs());
+
+    return true;
+}
 
 bool Finder::look(int track)
 {
-    if (track == trackCount)
+    if ((!working) || (lim == 0) || (dev < 30.0))
         return true;
+
+    if (track == trackCount)
+    {
+        // show(std::cout);
+        const auto latest{deviation<SideRef>(sides)};
+        if (latest < dev)
+        {
+            // std::cout << latest << "\n";
+            snapshot(latest);
+
+            --lim;
+
+    // for (const auto & side : sides)
+    //     std::cout << side.getTitle() << " - " << side.size() << " tracks " <<
+    //         secondsToTimeString(side.getDuration()) << "\n";
+        }
+
+        return true;
+    }
 
     Indexer side{track, (int)sideCount};
 
     for (int i = 0; i < sideCount; ++i, side.inc())
+    // for (int side = 0; side < sideCount; ++side)
     {
         // std::cout << "track " << track << "  side " << side << "\n";
 
@@ -135,10 +227,11 @@ bool Finder::look(int track)
         auto & sp{sides[side()]};
         if (sp.getDuration() + tp.getSeconds() <= duration)
         {
-            sp.push(tp);
+            sp.push(track);
 
-            if (look(track+1))
-                return true;
+            look(track+1);
+            // if (look(track+1))
+            //     return true;
 
             sp.pop();
         }
@@ -147,47 +240,62 @@ bool Finder::look(int track)
     return false;
 }
 
+void Finder::waiter()
+{
+    using namespace std::literals::chrono_literals;
+
+    while (working)
+    {
+        std::this_thread::sleep_for(1s);
+        --working;
+    }
+}
 bool Finder::addTracksToSides(void)
 {
+    working = 600;
+    std::thread worker(waiter);
+
     success = look(0);
+    success = true;
+    working = 1;
+
+    worker.join();
 
     return success;
 }
 
 bool Finder::show(std::ostream & os) const
 {
-    for (const auto & side : sides)
-        os << side.getTitle() << " - " << side.size() << " tracks " <<
-            secondsToTimeString(side.getDuration()) << " (" << duration-side.getDuration() << ")\n";
+    // for (const auto & side : sides)
+    //     os << side.getTitle() << " - " << side.size() << " tracks " <<
+    //         secondsToTimeString(side.getDuration()) << " (" << duration-side.getDuration() << ")\n";
+
+    os << "deviation " << dev << "\n";
+    for (const auto & side : best)
+    {
+        size_t total{};
+        for (const auto & track : side)
+            total += tracks[track].getSeconds();
+        os << " - " << side.size() << " tracks " << secondsToTimeString(total) << "\n";
+    }
 
     return success;
 }
 
 bool Finder::showAll(std::ostream & os) const
 {
-    for (const auto & side : sides)
-        os << side.toString() << "\n";
+    // for (const auto & side : sides)
+    //     os << side.toString() << "\n";
+
+    for (const auto & side : best)
+    {
+        os << " - " << side.size() << " tracks " << "\n";
+        for (const auto & track : side)
+            os << secondsToTimeString(tracks[track].getSeconds()) << " - " << tracks[track].getTitle() << "\n";
+        os << "\n";
+    }
 
     return success;
-}
-
-double Finder::deviation() const
-{
-    // Calculate total play time.
-    auto lambdaSum = [](size_t a, const Side & b) { return a + b.getDuration(); };
-    size_t total = std::accumulate(sides.begin(), sides.end(), 0, lambdaSum);
-	// std::cout << "total " << total << "\n";
-
-    double mean{(double)total / sideCount};
-	// std::cout << "mean " << mean << "\n";
-
-    auto lambdaVariance = [mean](double a, const Side & b) { return a + std::pow((mean - b.getDuration()), 2); };
-    double variance = std::accumulate(sides.begin(), sides.end(), 0.0, lambdaVariance);
-	// std::cout << "variance " << variance << "\n";
-    variance /= sideCount;
-	// std::cout << "variance " << variance << "\n";
-
-    return std::sqrt(variance);
 }
 
 
@@ -245,7 +353,7 @@ int shuffleTracksAcrossSides(void)
     if (find.isSuccessful())
     {
         std::cout << "\nThe recommended sides are\n";
-        // find.showAll(std::cout);
+        find.showAll(std::cout);
     }
 
     return 0;
