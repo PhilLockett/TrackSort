@@ -41,9 +41,9 @@ template<typename T=int>
 class Indexer
 {
 public:
-	Indexer(T first, T limit);
-	T operator()(void) const { return index; }
-	T inc();
+    Indexer(T first, T limit);
+    T operator()(void) const { return index; }
+    T inc();
 
 private:
     T step, index, start, end;
@@ -57,7 +57,7 @@ Indexer<T>::Indexer(T first, T limit) :
     {
         step = -1;
         index = limit - 1 - index;
-		std::swap(start, end);
+        std::swap(start, end);
     }
 }
 
