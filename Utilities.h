@@ -54,22 +54,22 @@ extern std::vector<Track> buildTrackListFromInputFile(const std::filesystem::pat
  * @return double the calculated the standard deviation.
  */
 #include <iostream>
-template<typename T=std::vector<Side>>
-double deviation(const T & list)
+template<typename T=Side>
+double deviation(const std::vector<T> & list)
 {
     // Calculate total play time.
-    auto lambdaSum = [](size_t a, const Side & b) { return a + b.getDuration(); };
+    auto lambdaSum = [](size_t a, const T & b) { return a + b.getDuration(); };
     size_t total = std::accumulate(list.begin(), list.end(), 0, lambdaSum);
-	// std::cout << "total " << total << "\n";
+    // std::cout << "total " << total << "\n";
 
     double mean{(double)total / list.size()};
-	// std::cout << "mean " << mean << "\n";
+    // std::cout << "mean " << mean << "\n";
 
-    auto lambdaVariance = [mean](double a, const Side & b) { return a + std::pow((mean - b.getDuration()), 2); };
+    auto lambdaVariance = [mean](double a, const T & b) { return a + std::pow((mean - b.getDuration()), 2); };
     double variance = std::accumulate(list.begin(), list.end(), 0.0, lambdaVariance);
-	// std::cout << "variance " << variance << "\n";
+    // std::cout << "variance " << variance << "\n";
     variance /= list.size();
-	// std::cout << "variance " << variance << "\n";
+    // std::cout << "variance " << variance << "\n";
 
     return std::sqrt(variance);
 }
