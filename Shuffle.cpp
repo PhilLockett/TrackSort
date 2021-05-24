@@ -136,6 +136,12 @@ std::string SideRef::toString() const
     return s;
 }
 
+
+/**
+ * @section Define Finder class.
+ *
+ */
+
 class Finder
 {
 public:
