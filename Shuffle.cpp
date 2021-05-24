@@ -186,12 +186,12 @@ bool Finder::snapshot(double latest)
     return true;
 }
 
-bool Finder::look(int track)
+bool Finder::look(int trackIndex)
 {
     if ((!timer.isWorking()) || (dev < 20.0))
         return true;
 
-    if (track == trackCount)
+    if (trackIndex == trackCount)
     {
         const auto latest{deviation<SideRef>(sides)};
         if (latest < dev)
@@ -200,19 +200,16 @@ bool Finder::look(int track)
         return true;
     }
 
-    Indexer side{track, (int)sideCount};
-
+    Indexer side{trackIndex, (int)sideCount};
     for (int i = 0; i < sideCount; ++i, side.inc())
     {
-        auto & tp{tracks[track]};
-        auto & sp{sides[side()]};
-        if (sp.getDuration() + tp.getSeconds() <= duration)
+        auto & trackRef{tracks[trackIndex]};
+        auto & sideRef{sides[side()]};
+        if (sideRef.getDuration() + trackRef.getSeconds() <= duration)
         {
-            sp.push(track);
-
-            look(track+1);
-
-            sp.pop();
+            sideRef.push(trackIndex);
+            look(trackIndex+1);
+            sideRef.pop();
         }
     }
 
