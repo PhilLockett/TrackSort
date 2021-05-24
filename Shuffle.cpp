@@ -89,14 +89,11 @@ T Indexer<T>::inc()
 class SideRef
 {
 public:
-    SideRef(const std::vector<Track> & trackList) : title{}, seconds{}, tracks{trackList} {}
+    SideRef(const std::vector<Track> & trackList) : seconds{}, tracks{trackList} {}
 
-    void setTitle(const std::string & t) { title = t; }
     void push(size_t);
     void pop();
-    std::string toString() const;
 
-    std::string getTitle() const { return title; }
     size_t getDuration() const { return seconds; }
 
     size_t size(void) const { return trackRefs.size(); }
@@ -105,7 +102,6 @@ public:
     std::vector<size_t> getRefs() const { return trackRefs; }
 
 private:
-    std::string title;
     size_t seconds;
     const std::vector<Track> & tracks;
     std::vector<size_t> trackRefs;
@@ -122,18 +118,6 @@ void SideRef::pop()
 {
     seconds -= tracks[trackRefs.back()].getSeconds();
     trackRefs.pop_back();
-}
-
-std::string SideRef::toString() const
-{
-    std::string s{title + " - " + std::to_string(size()) + " tracks\n"};
-    
-    for (const auto track : trackRefs)
-        s += secondsToTimeString(tracks[track].getSeconds()) + " - " + tracks[track].getTitle() + '\n';
-
-    s += secondsToTimeString(seconds) + '\n';
-
-    return s;
 }
 
 
@@ -188,11 +172,7 @@ Finder::Finder(const std::vector<Track> & trackList, const size_t dur, const siz
     best.reserve(sideCount);
     SideRef side{trackList};
     for (int i = 0; i < sideCount; ++i)
-    {
-        const std::string title{"Side " + std::to_string(i+1)};
-        side.setTitle(title);
         sides.push_back(side);
-    }
 }
 
 
