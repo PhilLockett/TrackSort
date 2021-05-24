@@ -113,3 +113,64 @@ std::vector<Track> buildTrackListFromInputFile(const std::filesystem::path & inp
 
     return tracks;
 }
+
+
+/**
+ * @section Define Timer class.
+ *
+ */
+
+void Timer::waiter(void)
+{
+    using namespace std::literals::chrono_literals;
+
+    while (true)
+    {
+        std::this_thread::sleep_for(1s);
+
+        std::lock_guard<std::mutex> lock(counterMutex);
+        if (!working)
+        {
+            std::cout << "Aborting!\n";
+            break;
+        }
+
+        if (--counter <= 0)
+        {
+            std::cout << "Done waiting\n";
+            working = false;
+            break;
+        }
+
+        std::cout << counter << "\n";
+    }
+}
+
+void Timer::start(void)
+{
+    std::cout << "starting\n";
+    {
+        std::lock_guard<std::mutex> lock(counterMutex);
+
+        std::cout << "Go!\n";
+        counter = duration;
+        working = true;
+    }
+    cyberdyne = std::async(std::launch::async, &Timer::waiter, this);
+    std::cout << "Done starting\n";
+}
+
+void Timer::terminate(void)
+{
+    std::cout << "terminating\n";
+    std::lock_guard<std::mutex> lock(counterMutex);
+    working = false;
+    counter = 1;
+
+    using namespace std::literals::chrono_literals;
+    if (cyberdyne.valid())
+    {
+        std::cout << "waiting for thread\n\n\n";
+        cyberdyne.wait_for(1s);
+    }
+}

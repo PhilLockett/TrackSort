@@ -27,6 +27,7 @@
 #if !defined _UTILITIES_H_INCLUDED_
 #define _UTILITIES_H_INCLUDED_
 
+#include <iostream>
 #include <string>
 #include <filesystem>
 #include <vector>
@@ -53,7 +54,6 @@ extern std::vector<Track> buildTrackListFromInputFile(const std::filesystem::pat
  * @param list to use as data.
  * @return double the calculated the standard deviation.
  */
-#include <iostream>
 template<typename T=Side>
 double deviation(const std::vector<T> & list)
 {
@@ -73,5 +73,37 @@ double deviation(const std::vector<T> & list)
 
     return std::sqrt(variance);
 }
+
+/**
+ * @section Define Timer class.
+ *
+ */
+
+#include <mutex>
+#include <future>
+
+class Timer
+{
+public:
+    Timer(size_t init) : working{}, duration{init}, counter{init} {}
+
+    void start(void);
+    void terminate(void);
+
+    void set(size_t init) { std::lock_guard<std::mutex> lock(counterMutex); duration = init; counter = init; }
+    void reset(void) { std::lock_guard<std::mutex> lock(counterMutex); counter = duration; }
+    bool isWorking(void) const { std::lock_guard<std::mutex> lock(counterMutex); return working; }
+
+private:
+    void waiter(void);
+
+    bool working;
+    size_t duration;
+    size_t counter;
+    mutable std::mutex counterMutex;
+    std::future<void> cyberdyne;
+
+};
+
 
 #endif //!defined _UTILITIES_H_INCLUDED_

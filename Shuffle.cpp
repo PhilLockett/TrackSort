@@ -161,7 +161,6 @@ public:
 private:
     bool look(int track);
     bool snapshot(double latest);
-    static void waiter(void);
 
     const size_t duration;
     const size_t sideCount;
@@ -171,20 +170,19 @@ private:
     int trackIndex;
     int sideIndex;
     bool success;
-    size_t lim;
 
     const std::vector<Track> & tracks;
     std::vector<SideRef> sides;
 
-    static size_t working;
     double dev;
     std::vector<std::vector<size_t>> best;
+    Timer timer;
 };
 
 Finder::Finder(const std::vector<Track> & trackList, const size_t dur, const size_t count) :
     duration{dur}, sideCount{count}, trackCount{trackList.size()},
-    forward{true}, trackIndex{}, sideIndex{}, success{}, lim{150},  tracks{trackList}, sides{},
-    dev{std::numeric_limits<double>::max()}, best{}
+    forward{true}, trackIndex{}, sideIndex{}, success{}, tracks{trackList}, sides{},
+    dev{std::numeric_limits<double>::max()}, best{}, timer{60}
 {
     sides.reserve(sideCount);
     best.reserve(sideCount);
@@ -196,7 +194,6 @@ Finder::Finder(const std::vector<Track> & trackList, const size_t dur, const siz
         sides.push_back(side);
     }
 }
-size_t Finder::working;
 
 
 bool Finder::snapshot(double latest)
@@ -211,18 +208,14 @@ bool Finder::snapshot(double latest)
 
 bool Finder::look(int track)
 {
-    if ((!working) || (lim == 0) || (dev < 30.0))
+    if ((!timer.isWorking()) || (dev < 20.0))
         return true;
 
     if (track == trackCount)
     {
         const auto latest{deviation<SideRef>(sides)};
         if (latest < dev)
-        {
             snapshot(latest);
-
-            --lim;
-        }
 
         return true;
     }
@@ -246,26 +239,14 @@ bool Finder::look(int track)
     return false;
 }
 
-void Finder::waiter()
-{
-    using namespace std::literals::chrono_literals;
-
-    while (working)
-    {
-        std::this_thread::sleep_for(1s);
-        --working;
-    }
-}
 bool Finder::addTracksToSides(void)
 {
-    working = 60;
-    std::thread worker(waiter);
+    timer.start();
 
     success = look(0);
     success = true;
-    working = 1;
 
-    worker.join();
+	timer.terminate();
 
     return success;
 }
