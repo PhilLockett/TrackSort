@@ -216,18 +216,12 @@ bool Finder::look(int track)
 
     if (track == trackCount)
     {
-        // show(std::cout);
         const auto latest{deviation<SideRef>(sides)};
         if (latest < dev)
         {
-            // std::cout << latest << "\n";
             snapshot(latest);
 
             --lim;
-
-    // for (const auto & side : sides)
-    //     std::cout << side.getTitle() << " - " << side.size() << " tracks " <<
-    //         secondsToTimeString(side.getDuration()) << "\n";
         }
 
         return true;
@@ -236,10 +230,7 @@ bool Finder::look(int track)
     Indexer side{track, (int)sideCount};
 
     for (int i = 0; i < sideCount; ++i, side.inc())
-    // for (int side = 0; side < sideCount; ++side)
     {
-        // std::cout << "track " << track << "  side " << side << "\n";
-
         auto & tp{tracks[track]};
         auto & sp{sides[side()]};
         if (sp.getDuration() + tp.getSeconds() <= duration)
@@ -247,8 +238,6 @@ bool Finder::look(int track)
             sp.push(track);
 
             look(track+1);
-            // if (look(track+1))
-            //     return true;
 
             sp.pop();
         }
@@ -269,7 +258,7 @@ void Finder::waiter()
 }
 bool Finder::addTracksToSides(void)
 {
-    working = 600;
+    working = 60;
     std::thread worker(waiter);
 
     success = look(0);
@@ -336,7 +325,8 @@ int shuffleTracksAcrossSides(void)
         optimum++;
     if ((optimum & 1) && (Configuration::isEven()))
         optimum++;
-    std::cout << "Optimum number of sides " << optimum << "\n";
+    if (showDebug)
+        std::cout << "Optimum number of sides " << optimum << "\n";
 
 
 
