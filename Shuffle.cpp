@@ -277,10 +277,6 @@ bool Finder::addTracksToSides(void)
 
 bool Finder::show(std::ostream & os) const
 {
-    // for (const auto & side : sides)
-    //     os << side.getTitle() << " - " << side.size() << " tracks " <<
-    //         secondsToTimeString(side.getDuration()) << " (" << duration-side.getDuration() << ")\n";
-
     os << "deviation " << dev << "\n";
     for (const auto & side : best)
     {
@@ -295,9 +291,6 @@ bool Finder::show(std::ostream & os) const
 
 bool Finder::showAll(std::ostream & os) const
 {
-    // for (const auto & side : sides)
-    //     os << side.toString() << "\n";
-
     for (const auto & side : best)
     {
         os << " - " << side.size() << " tracks " << "\n";
@@ -320,9 +313,6 @@ int shuffleTracksAcrossSides(void)
         return a.getSeconds() > b.getSeconds();
     });
 
-    // for (const auto & track : tracks)
-    //     std::cout << track.toString() << "\n";
-
     // Calculate total play time.
     auto lambda = [](size_t a, const Track & b) { return a + b.getSeconds(); };
     size_t total = std::accumulate(tracks.begin(), tracks.end(), 0, lambda);
@@ -333,9 +323,6 @@ int shuffleTracksAcrossSides(void)
     const size_t duration{Configuration::getDuration()};
     if (showDebug)
         std::cout << "Required duration " << secondsToTimeString(duration) << "\n";
-
-    // Calculate 'packed' sides -> minimum sides needed.
-    // std::vector<Side> sides{};
 
     // Calculate number of sides required.
     size_t optimum{total / duration};
