@@ -131,7 +131,7 @@ class Finder
 public:
     using Iterator = std::vector<SideRef>::const_iterator;
 
-    Finder(const std::vector<Track> &, const size_t, const size_t);
+    Finder(const std::vector<Track> &, const size_t, const size_t, const size_t);
 
     bool addTracksToSides(void);
     bool isSuccessful(void) const { return success; }
@@ -163,10 +163,10 @@ private:
     Timer timer;
 };
 
-Finder::Finder(const std::vector<Track> & trackList, const size_t dur, const size_t count) :
+Finder::Finder(const std::vector<Track> & trackList, const size_t dur, const size_t tim, const size_t count) :
     duration{dur}, sideCount{count}, trackCount{trackList.size()},
     forward{true}, trackIndex{}, sideIndex{}, success{}, tracks{trackList}, sides{},
-    dev{std::numeric_limits<double>::max()}, best{}, timer{60}
+    dev{std::numeric_limits<double>::max()}, best{}, timer{tim}
 {
     sides.reserve(sideCount);
     best.reserve(sideCount);
@@ -282,6 +282,11 @@ int shuffleTracksAcrossSides(void)
     if (showDebug)
         std::cout << "Required duration " << secondsToTimeString(duration) << "\n";
 
+    // Get (user requested) timeout.
+    const size_t timeout{Configuration::getTimeout()};
+    if (showDebug)
+        std::cout << "Required timeout " << secondsToTimeString(timeout) << "\n";
+
     // Calculate number of sides required.
     size_t optimum{total / duration};
     if (total % duration)
@@ -293,7 +298,7 @@ int shuffleTracksAcrossSides(void)
 
 
 
-    Finder find{tracks, duration, optimum};
+    Finder find{tracks, duration, timeout, optimum};
     find.addTracksToSides();
     if ((find.isSuccessful()) && (showDebug))
     {

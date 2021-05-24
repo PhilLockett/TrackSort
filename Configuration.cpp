@@ -51,6 +51,7 @@ int Configuration::help(const char * const name)
     std::cout << "\t-h --help \t\tThis help page and nothing else.\n";
     std::cout << "\t-i --input <file> \tInput file name containing the track listing.\n";
     std::cout << "\t-d --duration <seconds>\tMaximum length of each disc.\n";
+    std::cout << "\t-t --timeout <seconds> \tThe maximum time to spend looking.\n";
     std::cout << "\t-e --even\t\tRequire an even number of discs (sides).\n";
     std::cout << "\t-s --shuffle\t\tReorder tracks for optimal fit.\n";
 
@@ -84,13 +85,14 @@ int Configuration::parseCommandLine(int argc, char *argv[])
             {"help",    no_argument,0,'h'},
             {"input",   required_argument,0,'i'},
             {"duration",  required_argument,0,'d'},
+            {"timeout",  required_argument,0,'t'},
             {"even",    no_argument,0,'e'},
             {"shuffle", no_argument,0,'s'},
             {"debug",   no_argument,0,'x'},
             {0,0,0,0}
         };
 
-        optchr = getopt_long(argc, argv ,"hi:d:esx", long_options, &option_index);
+        optchr = getopt_long(argc, argv ,"hi:d:t:esx", long_options, &option_index);
         if (optchr == -1)
             return 0;
 
@@ -101,6 +103,8 @@ int Configuration::parseCommandLine(int argc, char *argv[])
             case 'i': setInputFile(std::string(optarg)); break;
 
             case 'd': setDuration(std::string(optarg)); break;
+
+            case 't': setTimeout(std::string(optarg)); break;
 
             case 'e': enableEven(); break;
 
@@ -147,6 +151,7 @@ void Configuration::display(std::ostream &os) const
     os << "Config is " << std::string{isValid() ? "" : "NOT "} << "valid\n";
     os << "Input file name:  " << getInputFile() << '\n';
     os << "Disc duration: " << getDuration() << "s\n";
+    os << "Timeout: " << getTimeout() << "s\n";
     if (isEven())
         os << "An even number of sides requested.\n";
     if (isShuffle())

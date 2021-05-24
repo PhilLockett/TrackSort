@@ -42,19 +42,21 @@ class Configuration
 {
 private:
 //- Hide the default constructor and destructor.
-    Configuration(void) : inputFile{}, seconds{}, even{}, shuffle{}, debug{} {  }
+    Configuration(void) : inputFile{}, seconds{}, timeout{60}, even{}, shuffle{}, debug{} {  }
     virtual ~Configuration(void) {}
 
     void display(std::ostream &os) const;
 
     std::filesystem::path inputFile;
     size_t seconds;
+    size_t timeout;
     bool even;
     bool shuffle;
     bool debug;
 
     void setInputFile(std::string name) { inputFile = name; }
     void setDuration(std::string time) { seconds = timeStringToSeconds(time); }
+    void setTimeout(std::string time) { timeout = timeStringToSeconds(time); }
     void enableEven() { even = true; }
     void enableShuffle() { shuffle = true; }
     void enableDebug(void) { debug = true; }
@@ -74,6 +76,7 @@ public:
 
     static std::filesystem::path & getInputFile(void) { return Configuration::instance().inputFile; }
     static size_t getDuration(void) { return Configuration::instance().seconds; }
+    static size_t getTimeout(void) { return Configuration::instance().timeout; }
     static bool isEven(void) { return Configuration::instance().even; }
     static bool isShuffle(void) { return Configuration::instance().shuffle; }
     static bool isDebug(void) { return Configuration::instance().debug; }

@@ -138,6 +138,11 @@ int splitTracksAcrossSides(void)
     if (showDebug)
         std::cout << "Required duration " << secondsToTimeString(duration) << "\n";
 
+    // Get (user requested) timeout.
+    const size_t timeout{Configuration::getTimeout()};
+    if (showDebug)
+        std::cout << "Required timeout " << secondsToTimeString(timeout) << "\n";
+
     // Calculate 'packed' sides -> minimum sides needed.
     std::vector<Side> sides{};
     sides = addTracksToSides(tracks, duration);
@@ -155,7 +160,7 @@ int splitTracksAcrossSides(void)
         std::cout << "Minimum side length " << secondsToTimeString(length) << "\n";
 
     // Home in on optimum side length.
-    Timer timer{15};
+    Timer timer{timeout};
     size_t minimum{length};
     size_t maximum{duration};
 
