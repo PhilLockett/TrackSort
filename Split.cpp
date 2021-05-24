@@ -155,9 +155,11 @@ int splitTracksAcrossSides(void)
         std::cout << "Minimum side length " << secondsToTimeString(length) << "\n";
 
     // Home in on optimum side length.
-    size_t lim{15};
+    Timer timer{15};
     size_t minimum{length};
     size_t maximum{duration};
+
+    timer.start();
     while (minimum <= maximum)
     {
         size_t median{(minimum + maximum + 1) / 2};
@@ -203,12 +205,14 @@ int splitTracksAcrossSides(void)
             break;
         }
 
-        if (--lim == 0)
+        if (!timer.isWorking())
         {
-            std::cerr << "Abort!!!\n";
+            if (showDebug)
+                std::cout << "Abort!!!\n";
             break;
         }
     }
+	timer.terminate();
 
     std::cout << "\nThe recommended sides are\n";
     for (const auto & side : sides)
