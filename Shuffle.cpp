@@ -40,6 +40,11 @@
 #include "Configuration.h"
 
 
+/**
+ * @section Define Indexer class.
+ *
+ */
+
 template<typename T=int>
 class Indexer
 {
@@ -74,6 +79,12 @@ T Indexer<T>::inc()
 
     return index;
 }
+
+
+/**
+ * @section Define SideRef class.
+ *
+ */
 
 class SideRef
 {
