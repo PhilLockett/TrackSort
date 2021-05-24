@@ -234,12 +234,13 @@ bool Finder::addTracksToSides(void)
 bool Finder::show(std::ostream & os) const
 {
     os << "deviation " << dev << "\n";
+    int i = 0;
     for (const auto & side : best)
     {
         size_t total{};
         for (const auto & track : side)
             total += tracks[track].getSeconds();
-        os << " - " << side.size() << " tracks " << secondsToTimeString(total) << "\n";
+        os << "Side " << std::to_string(++i) << " - " << side.size() << " tracks " << secondsToTimeString(total) << "\n";
     }
 
     return success;
@@ -247,12 +248,16 @@ bool Finder::show(std::ostream & os) const
 
 bool Finder::showAll(std::ostream & os) const
 {
+    int i = 0;
     for (const auto & side : best)
     {
-        os << " - " << side.size() << " tracks " << "\n";
+        os << "Side " << std::to_string(++i) << " - " << side.size() << " tracks " << "\n";
         for (const auto & track : side)
             os << secondsToTimeString(tracks[track].getSeconds()) << " - " << tracks[track].getTitle() << "\n";
-        os << "\n";
+        size_t total{};
+        for (const auto & track : side)
+            total += tracks[track].getSeconds();
+        os << secondsToTimeString(total) << "\n\n";
     }
 
     return success;
