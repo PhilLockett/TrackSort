@@ -274,18 +274,12 @@ int shuffleTracksAcrossSides(void)
     // Calculate total play time.
     auto lambda = [](size_t a, const Track & b) { return a + b.getSeconds(); };
     size_t total = std::accumulate(tracks.begin(), tracks.end(), 0, lambda);
-    if (showDebug)
-        std::cout << "Total duration " << secondsToTimeString(total) << "\n";
 
     // Get user requested maximum side length.
     const size_t duration{Configuration::getDuration()};
-    if (showDebug)
-        std::cout << "Required duration " << secondsToTimeString(duration) << "\n";
 
     // Get (user requested) timeout.
     const size_t timeout{Configuration::getTimeout()};
-    if (showDebug)
-        std::cout << "Required timeout " << secondsToTimeString(timeout) << "\n";
 
     // Calculate number of sides required.
     size_t optimum{total / duration};
@@ -293,32 +287,33 @@ int shuffleTracksAcrossSides(void)
         optimum++;
     if ((optimum & 1) && (Configuration::isEven()))
         optimum++;
-    if (showDebug)
-        std::cout << "Optimum number of sides " << optimum << "\n";
+        
+    // Calculate minimum side length.
+    size_t length{total/optimum};
 
+    if (showDebug)
+    {
+        std::cout << "Total duration " << secondsToTimeString(total) << "\n";
+        std::cout << "Required duration " << secondsToTimeString(duration) << "\n";
+        std::cout << "Required timeout " << secondsToTimeString(timeout) << "\n";
+        std::cout << "Optimum number of sides " << optimum << "\n";
+        std::cout << "Minimum side length " << secondsToTimeString(length) << "\n";
+    }
 
 
     Finder find{tracks, duration, timeout, optimum};
     find.addTracksToSides();
-    if ((find.isSuccessful()) && (showDebug))
-    {
-        std::cout << "Packed sides\n";
-        find.show(std::cout);
-    }
-
-
-    // Calculate minimum side length.
-    size_t length{total/optimum};
-    if (showDebug)
-        std::cout << "Minimum side length " << secondsToTimeString(length) << "\n";
-
     if (find.isSuccessful())
     {
+        if (showDebug)
+        {
+            std::cout << "Packed sides\n";
+            find.show(std::cout);
+        }
+
         std::cout << "\nThe recommended sides are\n";
         find.showAll(std::cout);
     }
 
     return 0;
 }
-
-

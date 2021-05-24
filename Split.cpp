@@ -130,18 +130,12 @@ int splitTracksAcrossSides(void)
     // Calculate total play time.
     auto lambda = [](size_t a, const Track & b) { return a + b.getSeconds(); };
     size_t total = std::accumulate(tracks.begin(), tracks.end(), 0, lambda);
-    if (showDebug)
-        std::cout << "Total duration " << secondsToTimeString(total) << "\n";
 
     // Get user requested maximum side length.
     const size_t duration{Configuration::getDuration()};
-    if (showDebug)
-        std::cout << "Required duration " << secondsToTimeString(duration) << "\n";
 
     // Get (user requested) timeout.
     const size_t timeout{Configuration::getTimeout()};
-    if (showDebug)
-        std::cout << "Required timeout " << secondsToTimeString(timeout) << "\n";
 
     // Calculate 'packed' sides -> minimum sides needed.
     std::vector<Side> sides{};
@@ -151,13 +145,18 @@ int splitTracksAcrossSides(void)
     size_t optimum{sides.size()};
     if ((optimum & 1) && (Configuration::isEven()))
         optimum++;
-    if (showDebug)
-        std::cout << "Optimum number of sides " << optimum << "\n";
 
     // Calculate minimum side length.
     size_t length{total/optimum};
+
     if (showDebug)
+    {
+        std::cout << "Total duration " << secondsToTimeString(total) << "\n";
+        std::cout << "Required duration " << secondsToTimeString(duration) << "\n";
+        std::cout << "Required timeout " << secondsToTimeString(timeout) << "\n";
+        std::cout << "Optimum number of sides " << optimum << "\n";
         std::cout << "Minimum side length " << secondsToTimeString(length) << "\n";
+    }
 
     // Home in on optimum side length.
     Timer timer{timeout};
@@ -225,5 +224,3 @@ int splitTracksAcrossSides(void)
 
     return 0;
 }
-
-
