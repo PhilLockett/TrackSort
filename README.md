@@ -49,7 +49,9 @@ If an even number of sides is required use '-e' or '--even'.
 ### Re-ordering tracks
 If maintaining the original track order is not necessary use '-s' or 
 '--shuffle'. This allows the software to shuffle the order of the tracks to
-achieve the best balance of time possible.
+achieve the best balance of time possible. This uses a very different
+algorithm and takes considerably longer, so '--timeout' may be necessary
+to get the best results.
 
 ## Cloning and compiling
 To clone and compile this code, execute the following unix/linux commands:
