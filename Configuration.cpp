@@ -146,6 +146,11 @@ int Configuration::initialise(int argc, char *argv[])
  * @section track splitter configuration data.
  */
 
+/**
+ * @brief Display the configuration defined by the command line parameters.
+ * 
+ * @param os output stream on which to display.
+ */
 void Configuration::display(std::ostream &os) const
 {
     os << "Config is " << std::string{isValid() ? "" : "NOT "} << "valid\n";
@@ -158,6 +163,14 @@ void Configuration::display(std::ostream &os) const
         os << "Optimal reordering of tracks requested.\n";
 }
 
+/**
+ * @brief check the validity of the configuration defined by the command line
+ * parameters.
+ * 
+ * @param showErrors if true, send error messages to standard error. 
+ * @return true if the configuration is valid.
+ * @return false otherwise.
+ */
 bool Configuration::isValid(bool showErrors)
 {
     namespace fs = std::filesystem;
