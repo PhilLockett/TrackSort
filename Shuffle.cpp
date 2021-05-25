@@ -104,7 +104,7 @@ public:
     void push(size_t);
     void pop();
 
-    size_t getDuration() const { return seconds; }
+    size_t getSeconds() const { return seconds; }
 
     size_t size(void) const { return trackRefs.size(); }
     void clear() { seconds = 0; trackRefs.clear(); }
@@ -215,7 +215,7 @@ bool Finder::look(int trackIndex)
     {
         auto & trackRef{tracks[trackIndex]};
         auto & sideRef{sides[side()]};
-        if (sideRef.getDuration() + trackRef.getSeconds() <= duration)
+        if (sideRef.getSeconds() + trackRef.getSeconds() <= duration)
         {
             sideRef.push(trackIndex);
             look(trackIndex+1);

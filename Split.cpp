@@ -47,7 +47,7 @@ static std::vector<Side> addTracksToSides(const std::vector<Track> & tracks, siz
     Side side{};
     for (const auto & track : tracks)
     {
-        if (side.getDuration() + track.getSeconds() <= duration)
+        if (side.getSeconds() + track.getSeconds() <= duration)
         {
             side.push(track);
         }
@@ -175,7 +175,7 @@ int splitTracksAcrossSides(void)
         {
             std::cout << "Suggested sides\n";
             for (const auto & side : sides)
-                std::cout << side.getTitle() << " - " << side.size() << " tracks " << secondsToTimeString(side.getDuration()) << "\n";
+                std::cout << side.getTitle() << " - " << side.size() << " tracks " << secondsToTimeString(side.getSeconds()) << "\n";
         }
 
         if ((median == minimum) || (median == maximum))

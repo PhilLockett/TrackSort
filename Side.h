@@ -69,7 +69,7 @@ public:
     void pop();
 
     std::string getTitle() const { return title; }
-    size_t getDuration() const { return seconds; }
+    size_t getSeconds() const { return seconds; }
 
     size_t size(void) const { return tracks.size(); }
     Iterator begin(void) { return tracks.begin(); }
