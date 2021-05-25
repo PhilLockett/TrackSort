@@ -69,3 +69,4 @@ This code has the following points of interest:
   * The Configuration setters are private so only methods can use them.
   * The Timer class provides a timeout mechanism that can be cancelled.
   * Uses standard deviation to compare side lengths.
+  * The standard deviation parameterises the item type and container type.
