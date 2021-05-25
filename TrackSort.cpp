@@ -34,8 +34,6 @@
  *
  */
 
-#include "Shuffle.h"
-#include "Split.h"
 #include "Configuration.h"
 
 
@@ -76,6 +74,8 @@ int init(int argc, char *argv[])
  * @section System entry point.
  *
  */
+extern int shuffleTracksAcrossSides(void);
+extern int splitTracksAcrossSides(void);
 
 /**
  * @brief System entry point.

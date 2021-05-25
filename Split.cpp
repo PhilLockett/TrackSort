@@ -29,7 +29,6 @@
 #include <vector>
 #include <numeric>
 
-#include "Split.h"
 #include "Side.h"
 #include "Utilities.h"
 #include "Configuration.h"
@@ -216,7 +215,7 @@ int splitTracksAcrossSides(void)
             break;
         }
     }
-	timer.terminate();
+    timer.terminate();
 
     std::cout << "\nThe recommended sides are\n";
     for (const auto & side : sides)

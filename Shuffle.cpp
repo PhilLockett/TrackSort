@@ -34,7 +34,6 @@
 #include <thread>
 #include <chrono>
 
-#include "Shuffle.h"
 #include "Side.h"
 #include "Utilities.h"
 #include "Configuration.h"
@@ -223,7 +222,7 @@ bool Finder::addTracksToSides(void)
     success = look(0);
     success = true;
 
-	timer.terminate();
+    timer.terminate();
 
     return success;
 }
