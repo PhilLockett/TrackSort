@@ -54,8 +54,8 @@ extern std::vector<Track> buildTrackListFromInputFile(const std::filesystem::pat
  * @param list to use as data.
  * @return double the calculated the standard deviation.
  */
-template<typename T=Side>
-double deviation(const std::vector<T> & list)
+template<typename T=Side, typename C=std::vector<T>>
+double deviation(const C & list)
 {
     // Calculate total play time.
     auto lambdaSum = [](size_t a, const T & b) { return a + b.getSeconds(); };
