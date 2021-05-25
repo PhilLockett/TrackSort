@@ -19,7 +19,7 @@
  * @section DESCRIPTION
  *
  * 'TrackSort' is a command-line utility for splitting tracks across multiple
- * discs.
+ * sides.
  *
  * Basic code for the track splitter.
  */
@@ -27,7 +27,6 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include <numeric>
 
 #include "Side.h"
 #include "Utilities.h"
