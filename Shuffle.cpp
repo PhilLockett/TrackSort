@@ -42,6 +42,10 @@
 /**
  * @section Define Indexer class.
  *
+ * Indexer provides a cycling index from 0 to 'limit' inclusive, starting from
+ * 'first'.  The intention is to provide an even spread when inserting into a
+ * 2 dimensional container. The index either increases or decreases depending
+ * on whether 'first' is odd or even. 
  */
 
 template<typename T=int>
@@ -56,6 +60,13 @@ private:
     T step, index, start, end;
 };
 
+/**
+ * @brief Construct a new Indexer< T>:: Indexer object.
+ * 
+ * @tparam T numeric type to use for index (int by default)
+ * @param first index to use.
+ * @param limit maximum index.
+ */
 template<typename T>
 Indexer<T>::Indexer(T first, T limit) :
     step{1}, index{(first / 2) % limit}, start{0}, end{limit-1}
@@ -68,6 +79,12 @@ Indexer<T>::Indexer(T first, T limit) :
     }
 }
 
+/**
+ * @brief Increment the index.
+ * 
+ * @tparam T numeric type to use for index (int by default)
+ * @return T the new index.
+ */
 template<typename T>
 T Indexer<T>::inc()
 {
