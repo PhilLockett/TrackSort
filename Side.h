@@ -19,7 +19,7 @@
  * @section DESCRIPTION
  *
  * 'TrackSort' is a command-line utility for splitting tracks across multiple
- * discs.
+ * sides.
  *
  * Class definitions for the track splitter.
  */
