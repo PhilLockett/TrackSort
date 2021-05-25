@@ -50,9 +50,9 @@ int Configuration::help(const char * const name)
     std::cout << "  Options:\n";
     std::cout << "\t-h --help \t\tThis help page and nothing else.\n";
     std::cout << "\t-i --input <file> \tInput file name containing the track listing.\n";
-    std::cout << "\t-d --duration <seconds>\tMaximum length of each disc.\n";
+    std::cout << "\t-d --duration <seconds>\tMaximum length of each side.\n";
     std::cout << "\t-t --timeout <seconds> \tThe maximum time to spend looking.\n";
-    std::cout << "\t-e --even\t\tRequire an even number of discs (sides).\n";
+    std::cout << "\t-e --even\t\tRequire an even number of sides.\n";
     std::cout << "\t-s --shuffle\t\tReorder tracks for optimal fit.\n";
 
     return 1;
