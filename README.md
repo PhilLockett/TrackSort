@@ -53,6 +53,25 @@ achieve the best balance of time possible. This uses a very different
 algorithm and takes considerably longer, so '--timeout' may be necessary
 to get the best results.
 
+### Example track list
+The following track list example shows various ways of representing the length
+of a track, however it is required to mix formats it is howeber, recommended
+to use the same format throughout.
+
+    00:02:00	Sgt. Pepper's Lonely Hearts Club Band
+    00:02:42	With a Little Help from My Friends
+    03:28	Lucy in the Sky with Diamonds
+    02:48	Getting Better
+    2:36	Fixing a Hole
+    3:25	She's Leaving Home
+    157	Being for the Benefit of Mr. Kite!
+    305	Within You out You
+    157	When I'm Sixty-Four
+    00:02:42	Lovely Rita
+    00:02:42	Good Morning Good Morning
+    1:18	Sgt. Pepper's Lonely Hearts Club Band (Reprise)
+    5:38	A Day in the Life
+
 ## Cloning and compiling
 To clone and compile this code, execute the following unix/linux commands:
 
