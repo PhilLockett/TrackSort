@@ -55,8 +55,8 @@ to get the best results.
 
 ### Example track list
 The following track list example shows various ways of representing the length
-of a track, however it is required to mix formats it is howeber, recommended
-to use the same format throughout.
+of a track, however it is not required to mix formats, but it is recommended to
+use the same format throughout.
 
     00:02:00	Sgt. Pepper's Lonely Hearts Club Band
     00:02:42	With a Little Help from My Friends
