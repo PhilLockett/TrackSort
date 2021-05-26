@@ -42,7 +42,7 @@ public:
     Track(std::string line);
 
     std::string getTitle() const { return title; }
-    size_t getSeconds() const { return seconds; }
+    size_t getValue() const { return seconds; }
 
     std::string toString() const { return std::to_string(seconds) + " - " + title; }
 
@@ -69,7 +69,7 @@ public:
     void pop();
 
     std::string getTitle() const { return title; }
-    size_t getSeconds() const { return seconds; }
+    size_t getValue() const { return seconds; }
 
     size_t size(void) const { return tracks.size(); }
     Iterator begin(void) { return tracks.begin(); }

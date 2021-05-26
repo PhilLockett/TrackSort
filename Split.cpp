@@ -47,7 +47,7 @@ static std::vector<Side> addTracksToSides(const std::vector<Track> & tracks, siz
     Side side{};
     for (const auto & track : tracks)
     {
-        if (side.getSeconds() + track.getSeconds() <= duration)
+        if (side.getValue() + track.getValue() <= duration)
         {
             side.push(track);
         }
@@ -126,7 +126,7 @@ int splitTracksAcrossSides(void)
     std::vector<Track> tracks = buildTrackListFromInputFile(Configuration::getInputFile());
 
     // Calculate total play time.
-    auto lambda = [](size_t a, const Track & b) { return a + b.getSeconds(); };
+    auto lambda = [](size_t a, const Track & b) { return a + b.getValue(); };
     size_t total = std::accumulate(tracks.begin(), tracks.end(), 0, lambda);
 
     // Get user requested maximum side length.
@@ -175,7 +175,7 @@ int splitTracksAcrossSides(void)
         {
             std::cout << "Suggested sides\n";
             for (const auto & side : sides)
-                std::cout << side.getTitle() << " - " << side.size() << " tracks " << secondsToTimeString(side.getSeconds()) << "\n";
+                std::cout << side.getTitle() << " - " << side.size() << " tracks " << secondsToTimeString(side.getValue()) << "\n";
         }
 
         if ((median == minimum) || (median == maximum))

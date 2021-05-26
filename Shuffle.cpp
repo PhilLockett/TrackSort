@@ -104,7 +104,7 @@ public:
     void push(size_t);
     void pop();
 
-    size_t getSeconds() const { return seconds; }
+    size_t getValue() const { return seconds; }
 
     size_t size(void) const { return trackRefs.size(); }
     void clear() { seconds = 0; trackRefs.clear(); }
@@ -121,12 +121,12 @@ private:
 void SideRef::push(size_t track)
 {
     trackRefs.push_back(track);
-    seconds += tracks[track].getSeconds();
+    seconds += tracks[track].getValue();
 }
 
 void SideRef::pop()
 {
-    seconds -= tracks[trackRefs.back()].getSeconds();
+    seconds -= tracks[trackRefs.back()].getValue();
     trackRefs.pop_back();
 }
 
@@ -215,7 +215,7 @@ bool Finder::look(int trackIndex)
     {
         auto & trackRef{tracks[trackIndex]};
         auto & sideRef{sides[side()]};
-        if (sideRef.getSeconds() + trackRef.getSeconds() <= duration)
+        if (sideRef.getValue() + trackRef.getValue() <= duration)
         {
             sideRef.push(trackIndex);
             look(trackIndex+1);
@@ -246,7 +246,7 @@ bool Finder::show(std::ostream & os) const
     {
         size_t total{};
         for (const auto & track : side)
-            total += tracks[track].getSeconds();
+            total += tracks[track].getValue();
         os << "Side " << std::to_string(++i) << " - " << side.size() << " tracks " << secondsToTimeString(total) << "\n";
     }
 
@@ -260,10 +260,10 @@ bool Finder::showAll(std::ostream & os) const
     {
         os << "Side " << std::to_string(++i) << " - " << side.size() << " tracks " << "\n";
         for (const auto & track : side)
-            os << secondsToTimeString(tracks[track].getSeconds()) << " - " << tracks[track].getTitle() << "\n";
+            os << secondsToTimeString(tracks[track].getValue()) << " - " << tracks[track].getTitle() << "\n";
         size_t total{};
         for (const auto & track : side)
-            total += tracks[track].getSeconds();
+            total += tracks[track].getValue();
         os << secondsToTimeString(total) << "\n\n";
     }
 
@@ -278,11 +278,11 @@ int shuffleTracksAcrossSides(void)
     // Read track list file and sort it, longest to shortest.
     std::vector<Track> tracks = buildTrackListFromInputFile(Configuration::getInputFile());
     std::sort(tracks.begin(), tracks.end(), [](const Track & a, const Track & b) {
-        return a.getSeconds() > b.getSeconds();
+        return a.getValue() > b.getValue();
     });
 
     // Calculate total play time.
-    auto lambda = [](size_t a, const Track & b) { return a + b.getSeconds(); };
+    auto lambda = [](size_t a, const Track & b) { return a + b.getValue(); };
     size_t total = std::accumulate(tracks.begin(), tracks.end(), 0, lambda);
 
     // Get user requested maximum side length.

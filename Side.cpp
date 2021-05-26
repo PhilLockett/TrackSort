@@ -61,12 +61,12 @@ Track::Track(std::string line)
 void Side::push(const Track & track)
 {
     tracks.push_back(track);
-    seconds += track.getSeconds();
+    seconds += track.getValue();
 }
 
 void Side::pop()
 {
-    seconds -= tracks.back().getSeconds();
+    seconds -= tracks.back().getValue();
     tracks.pop_back();
 }
 
@@ -75,7 +75,7 @@ std::string Side::toString() const
     std::string s{title + " - " + std::to_string(size()) + " tracks\n"};
     
     for (const auto & track : tracks)
-        s += secondsToTimeString(track.getSeconds()) + " - " + track.getTitle() + '\n';
+        s += secondsToTimeString(track.getValue()) + " - " + track.getTitle() + '\n';
 
     s += secondsToTimeString(seconds) + '\n';
 
