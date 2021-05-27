@@ -146,7 +146,9 @@ public:
     bool addTracksToSides(void);
     bool isSuccessful(void) const { return success; }
     bool show(std::ostream & os) const;
-    bool showAll(std::ostream & os) const;
+    std::string trackToString(size_t i, bool plain, bool csv) const;
+    std::string sideToString(const std::vector<size_t> &, const std::string &, bool, bool) const;
+    bool showAll(std::ostream & os, bool plain=false, bool csv=false) const;
 
     size_t size(void) const { return sides.size(); }
     Iterator begin(void) { return sides.begin(); }
@@ -253,18 +255,51 @@ bool Finder::show(std::ostream & os) const
     return success;
 }
 
-bool Finder::showAll(std::ostream & os) const
+std::string Finder::trackToString(size_t track, bool plain, bool csv) const
 {
-    int i = 0;
+    const size_t seconds{tracks[track].getValue()};
+    std::string time{plain ? std::to_string(seconds) : secondsToTimeString(seconds)};
+
+    const std::string title{tracks[track].getTitle()};
+    std::string s{};
+    if (csv)
+        s = "Track, " + time + ", \"" + title + "\""; 
+    else
+        s = time + " - " + title;
+
+    return s;
+}
+
+std::string Finder::sideToString(const std::vector<size_t> & side, const std::string & title, bool plain, bool csv) const
+{
+    size_t seconds{};
+    for (const auto & track : side)
+        seconds += tracks[track].getValue();
+
+    std::string time{plain ? std::to_string(seconds) : secondsToTimeString(seconds)};
+
+    std::string s{};
+    if (csv)
+        s = "Side, " + time + ", \"" + title + " - " + std::to_string(side.size()) + " tracks\"\n";
+    else
+        s = title + " - " + std::to_string(side.size()) + " tracks\n";
+
+    for (const auto & track : side)
+        s += trackToString(track, plain, csv) + "\n";
+
+    if (!csv)
+        s += time + "\n\n";
+
+    return s;
+}
+
+bool Finder::showAll(std::ostream & os, bool plain, bool csv) const
+{
+    size_t index{};
     for (const auto & side : best)
     {
-        os << "Side " << std::to_string(++i) << " - " << side.size() << " tracks " << "\n";
-        for (const auto & track : side)
-            os << secondsToTimeString(tracks[track].getValue()) << " - " << tracks[track].getTitle() << "\n";
-        size_t total{};
-        for (const auto & track : side)
-            total += tracks[track].getValue();
-        os << secondsToTimeString(total) << "\n\n";
+        const std::string title{"Side " + std::to_string(++index)};
+        os << sideToString(side, title, plain, csv);
     }
 
     return success;
@@ -321,8 +356,11 @@ int shuffleTracksAcrossSides(void)
             find.show(std::cout);
         }
 
-        std::cout << "\nThe recommended sides are\n";
-        find.showAll(std::cout);
+        const auto csv{Configuration::isCSV()};
+        if (!csv)
+            std::cout << "\nThe recommended sides are\n";
+
+        find.showAll(std::cout, Configuration::isPlain(), csv);
     }
 
     return 0;
