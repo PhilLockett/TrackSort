@@ -216,9 +216,19 @@ int splitTracksAcrossSides(void)
     }
     timer.terminate();
 
-    std::cout << "\nThe recommended sides are\n";
-    for (const auto & side : sides)
-        std::cout << side.toString(Configuration::isPlain(), Configuration::isCSV()) << "\n";
+    const auto csv{Configuration::isCSV()};
+
+    if (csv)
+    {
+        for (const auto & side : sides)
+            std::cout << side.toString(Configuration::isPlain(), true);
+    }
+    else
+    {
+        std::cout << "\nThe recommended sides are\n";
+        for (const auto & side : sides)
+            std::cout << side.toString(Configuration::isPlain(), false) << "\n";
+    }
 
     return 0;
 }
