@@ -53,7 +53,9 @@ int Configuration::help(const char * const name)
     std::cout << "\t-d --duration <seconds>\tMaximum length of each side.\n";
     std::cout << "\t-t --timeout <seconds> \tThe maximum time to spend looking.\n";
     std::cout << "\t-e --even\t\tRequire an even number of sides.\n";
-    std::cout << "\t-s --shuffle\t\tReorder tracks for optimal fit.\n";
+    std::cout << "\t-s --shuffle\t\tRe-order tracks for optimal fit.\n";
+    std::cout << "\t-p --plain\t\tDisplay lengths in seconds instead of hh:mm:ss.\n";
+    std::cout << "\t-c --csv\t\tGenerate output as comma separated variables.\n";
 
     return 1;
 }
@@ -88,28 +90,26 @@ int Configuration::parseCommandLine(int argc, char *argv[])
             {"timeout",  required_argument,0,'t'},
             {"even",    no_argument,0,'e'},
             {"shuffle", no_argument,0,'s'},
+            {"plain",    no_argument,0,'p'},
+            {"csv", no_argument,0,'c'},
             {"debug",   no_argument,0,'x'},
             {0,0,0,0}
         };
 
-        optchr = getopt_long(argc, argv ,"hi:d:t:esx", long_options, &option_index);
+        optchr = getopt_long(argc, argv ,"hi:d:t:espcx", long_options, &option_index);
         if (optchr == -1)
             return 0;
 
         switch (optchr)
         {
             case 'h': return help(argv[0]);
-
             case 'i': setInputFile(std::string(optarg)); break;
-
             case 'd': setDuration(std::string(optarg)); break;
-
             case 't': setTimeout(std::string(optarg)); break;
-
             case 'e': enableEven(); break;
-
             case 's': enableShuffle(); break;
-
+            case 'p': enablePlain(); break;
+            case 'c': enableCSV(); break;
             case 'x': enableDebug(); break;
 
             default:
@@ -161,6 +161,10 @@ void Configuration::display(std::ostream &os) const
         os << "An even number of sides requested.\n";
     if (isShuffle())
         os << "Optimal reordering of tracks requested.\n";
+    if (isPlain())
+        os << "Display lengths in seconds instead of hh:mm:ss.\n";
+    if (isCSV())
+        os << "Comma separated variable output requested.\n";
 }
 
 /**

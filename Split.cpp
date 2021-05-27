@@ -218,7 +218,7 @@ int splitTracksAcrossSides(void)
 
     std::cout << "\nThe recommended sides are\n";
     for (const auto & side : sides)
-        std::cout << side.toString() << "\n";
+        std::cout << side.toString(Configuration::isPlain(), Configuration::isCSV()) << "\n";
 
     return 0;
 }

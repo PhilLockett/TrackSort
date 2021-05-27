@@ -44,7 +44,7 @@ public:
     std::string getTitle() const { return title; }
     size_t getValue() const { return seconds; }
 
-    std::string toString() const { return std::to_string(seconds) + " - " + title; }
+    std::string toString(bool plain=false, bool csv=false) const;
 
 private:
     std::string title;
@@ -75,7 +75,7 @@ public:
     Iterator begin(void) { return tracks.begin(); }
     Iterator end(void) { return tracks.end(); }
 
-    std::string toString() const;
+    std::string toString(bool plain=false, bool csv=false) const;
 
     void clear() { seconds = 0; tracks.clear(); }
 

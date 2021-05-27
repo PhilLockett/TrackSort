@@ -52,6 +52,19 @@ Track::Track(std::string line)
     title = line.substr(pos);
 }
 
+std::string Track::toString(bool plain, bool csv) const
+{
+    std::string time{plain ? std::to_string(seconds) : secondsToTimeString(seconds)};
+
+    std::string s{};
+    if (csv)
+        s = "Track, " + time + ", \"" + title + "\""; 
+    else
+        s = time + " - " + title;
+
+    return s;
+}
+
 
 /**
  * @section Define Side class.
@@ -70,14 +83,21 @@ void Side::pop()
     tracks.pop_back();
 }
 
-std::string Side::toString() const
+std::string Side::toString(bool plain, bool csv) const
 {
-    std::string s{title + " - " + std::to_string(size()) + " tracks\n"};
-    
-    for (const auto & track : tracks)
-        s += secondsToTimeString(track.getValue()) + " - " + track.getTitle() + '\n';
+    std::string time{plain ? std::to_string(seconds) : secondsToTimeString(seconds)};
 
-    s += secondsToTimeString(seconds) + '\n';
+    std::string s{};
+    if (csv)
+        s = "Side, " + time + ", \"" + title + " - " + std::to_string(size()) + " tracks\"\n";
+    else
+        s = title + " - " + std::to_string(size()) + " tracks\n";
+
+    for (const auto & track : tracks)
+        s += track.toString(plain, csv) + "\n";
+
+    if (!csv)
+        s += time + '\n';
 
     return s;
 }

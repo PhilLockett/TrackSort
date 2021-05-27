@@ -42,7 +42,7 @@ class Configuration
 {
 private:
 //- Hide the default constructor and destructor.
-    Configuration(void) : inputFile{}, seconds{}, timeout{60}, even{}, shuffle{}, debug{} {  }
+    Configuration(void) : inputFile{}, seconds{}, timeout{60}, even{}, shuffle{}, plain{}, csv{}, debug{} {  }
     virtual ~Configuration(void) {}
 
     void display(std::ostream &os) const;
@@ -52,6 +52,8 @@ private:
     size_t timeout;
     bool even;
     bool shuffle;
+    bool plain;
+    bool csv;
     bool debug;
 
     void setInputFile(std::string name) { inputFile = name; }
@@ -59,6 +61,8 @@ private:
     void setTimeout(std::string time) { timeout = timeStringToSeconds(time); }
     void enableEven() { even = true; }
     void enableShuffle() { shuffle = true; }
+    void enablePlain() { plain = true; }
+    void enableCSV() { csv = true; }
     void enableDebug(void) { debug = true; }
 
     int help(const char * const name);
@@ -79,6 +83,8 @@ public:
     static size_t getTimeout(void) { return Configuration::instance().timeout; }
     static bool isEven(void) { return Configuration::instance().even; }
     static bool isShuffle(void) { return Configuration::instance().shuffle; }
+    static bool isPlain(void) { return Configuration::instance().plain; }
+    static bool isCSV(void) { return Configuration::instance().csv; }
     static bool isDebug(void) { return Configuration::instance().debug; }
 
     static bool isValid(bool showErrors = false);
