@@ -51,7 +51,7 @@ public:
     friend std::ostream & operator<<(std::ostream &os, const TextFile &A) { A.display(os); return os; }
 
     void load(const std::vector<std::basic_string<T>> & other) { data = other; }
-    bool equal(const TextFile & other) const { return std::equal(data.begin(), data.end(), other.data.begin()); }
+    bool equal(const TextFile & other) const;
     void clear(void) { data.clear(); }
 
     void setFileName(const std::string & file) { fileName = file; }
@@ -81,9 +81,28 @@ private:
  */
 
 /**
- * Write the buffer to the named file.
- *
- * @return error value or 0 if no errors.
+ * @brief Compares the data of the supplied TextFile equals this data.
+ * 
+ * @tparam T Char type.
+ * @param other the suplied TextFile to compare.
+ * @return true if the data of the suplied TextFile equals this data.
+ * @return false otherwise.
+ */
+template<typename T>
+bool TextFile<T>::equal(const TextFile & other) const
+{
+    if (data.size() != other.data.size())
+        return false;
+
+    return std::equal(data.begin(), data.end(), other.data.begin());
+}
+
+
+/**
+ * @brief Write the buffer to the named file.
+ * 
+ * @tparam T Char type.
+ * @return int error value or 0 if no errors.
  */
 template<typename T>
 int TextFile<T>::write(void) const
@@ -99,11 +118,13 @@ int TextFile<T>::write(void) const
     return 1;
 }
 
+
 /**
- * Read the named file into the buffer.
- *
- * @param  res - reserve the number of lines in the buffer.
- * @return error value or 0 if no errors.
+ * @brief Read the named file into the buffer.
+ * 
+ * @tparam T Char type.
+ * @param res reserve the number of lines in the buffer.
+ * @return int error value or 0 if no errors.
  */
 template<typename T>
 int TextFile<T>::read(int res)
