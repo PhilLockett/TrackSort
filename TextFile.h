@@ -52,6 +52,7 @@ public:
 
     void load(const std::vector<std::basic_string<T>> & other) { data = other; }
     bool equal(const TextFile & other) const;
+    bool equal(const TextFile & other, size_t count) const { return std::equal(data.begin(), data.begin()+count, other.data.begin()); }
     void clear(void) { data.clear(); }
 
     void setFileName(const std::string & file) { fileName = file; }
