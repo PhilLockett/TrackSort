@@ -1,5 +1,5 @@
 # TrackSort
-'TrackSort' is a command-line utility for splitting tracks across multiple
+'TrackSort' is a command-line utility for splitting 'tracks' across multiple
 'sides'.
 
 **USE AT OWN RISK.**
@@ -32,7 +32,7 @@ With 'TrackSort' compiled the following command will display the help page:
 The text file containing the track list is specified using '-i' or '--input'.
 Each line of the text file has the track length followed by the track title.
 The track length can be specified using the hh:mm:ss format, but can also use
-mm:ss format or simply in seconds.
+mm:ss format or simply as seconds.
 
 ### Side length (mandatory)
 To specify the maximum length of a side use '-d' or '--duration' and specify
@@ -52,8 +52,8 @@ If an even number of sides is required use '-e' or '--even'.
 If maintaining the original track order is not necessary use '-s' or 
 '--shuffle'. This allows the software to shuffle the order of the tracks to
 achieve the best balance of time possible. This uses a very different
-algorithm and takes considerably longer, so '--timeout' may be necessary
-to get the best results.
+algorithm and takes considerably longer, so setting '--timeout' may be
+necessary to get the best results.
 
 ### Disabling the time formatting
 If displaying lengths in seconds instead of hh:mm:ss is required use '-p' or
@@ -62,10 +62,10 @@ tracks are to be balanced.
 
 ### Comma separated values output
 If output as comma separated values is required use '-c' or '--csv'. This is 
-useful when output is to be read by another application. The first column
-represents the type and is either "Side" or "Track". The second column is the
-total length of the side or the length of the track. The third column is a
-label indicating the side number or the track title.
+useful when output is to be processed by another application. The first column
+represents the type and is either the word "Side" or "Track". The second column
+is the total length of the side or the length of the track. The third column is
+a label indicating the side number or the track title.
 
 ### Example track list
 The following track list example shows various ways of representing the length
@@ -101,5 +101,5 @@ This code has the following points of interest:
   * The Configuration class is implemented as a singleton.
   * The Configuration setters are private so only methods can use them.
   * The Timer class provides a timeout mechanism that can be cancelled.
-  * Uses standard deviation to compare side lengths.
-  * The standard deviation parameterises the item type and container type.
+  * Standard deviation is used to compare side lengths.
+  * The standard deviation parameterises both the item type and container type.
