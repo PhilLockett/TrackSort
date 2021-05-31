@@ -5,7 +5,7 @@
 **USE AT OWN RISK.**
 
 ## Overview
-This utility reads a text file contating a list of track lengths and titles
+This utility reads a text file containing a list of track lengths and titles
 and splits them across multiple 'sides' based on the options provided.
 
 To use 'TrackSort' you will need a C++ compiler and 'make' utility installed. 
@@ -24,7 +24,9 @@ With 'TrackSort' compiled the following command will display the help page:
             -d --duration <seconds> Maximum length of each side.
             -t --timeout <seconds>  The maximum time to spend looking.
             -e --even               Require an even number of sides.
-            -s --shuffle            Reorder tracks for optimal fit.
+            -s --shuffle            Re-order tracks for optimal fit.
+            -p --plain              Display lengths in seconds instead of hh:mm:ss.
+            -c --csv                Generate output as comma separated values.
 
 ### Track list file (mandatory)
 The text file containing the track list is specified using '-i' or '--input'.
@@ -52,6 +54,18 @@ If maintaining the original track order is not necessary use '-s' or
 achieve the best balance of time possible. This uses a very different
 algorithm and takes considerably longer, so '--timeout' may be necessary
 to get the best results.
+
+### Disabling the time formatting
+If displaying lengths in seconds instead of hh:mm:ss is required use '-p' or
+'--plain'. This may be easier to process or is useful if items other than
+tracks are to be balanced.
+
+### Comma separated values output
+If output as comma separated values is required use '-c' or '--csv'. This is 
+useful when output is to be read by another application. The first column
+represents the type and is either "Side" or "Track". The second column is the
+total length of the side or the length of the track. The third column is a
+label indicating the side number or the track title.
 
 ### Example track list
 The following track list example shows various ways of representing the length
