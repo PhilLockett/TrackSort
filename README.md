@@ -1,5 +1,5 @@
 # TrackSort
-'TrackSort' is a command-line utility for splitting 'tracks' across multiple
+`TrackSort` is a command-line utility for splitting 'tracks' across multiple
 'sides'.
 
 **USE AT OWN RISK.**
@@ -9,10 +9,10 @@ This utility reads a text file containing a list of track lengths and titles
 and splits them across multiple 'sides' based on the options provided.
 
 A more generic description could be that it reads a list of values and labels
-and balances these across multiple containers. Use the '-p' option to display
+and balances these across multiple containers. Use the `-p` option to display
 the values as integers.
 
-To use 'TrackSort' you will need a C++ compiler and 'make' utility installed. 
+To use `TrackSort` you will need a C++ compiler and `make` utility installed. 
 
 ## Cloning and compiling
 To clone and compile this code, execute the following unix/linux commands:
@@ -22,7 +22,7 @@ To clone and compile this code, execute the following unix/linux commands:
     make
 
 ## Usage
-With 'TrackSort' compiled the following command will display the help page:
+With `TrackSort` compiled the following command will display the help page:
 
     $ ./TrackSort -h
     Usage: ./TrackSort [Options]
@@ -40,39 +40,39 @@ With 'TrackSort' compiled the following command will display the help page:
             -c --csv                Generate output as comma separated values.
 
 ### Track list file (mandatory)
-The text file containing the track list is specified using '-i' or '--input'.
+The text file containing the track list is specified using `-i` or `--input`.
 Each line of the text file has the track length followed by the track title.
 The track length can be specified using the hh:mm:ss format, but can also use
 mm:ss format or simply as seconds.
 
 ### Side length (mandatory)
-To specify the maximum length of a side use '-d' or '--duration' and specify
+To specify the maximum length of a side use `-d` or `--duration` and specify
 the number of seconds. The duration can also be specified using the hh:mm:ss
 format, or the mm:ss format.
 
 ### Maximum processing timeout
 By default the software takes a maximum of 60 seconds to order the tracks. To
-change this timeout limit use '-t' or '--timeout' and specify the number of
+change this timeout limit use `-t` or `--timeout` and specify the number of
 seconds. The timeout can also be specified using the hh:mm:ss format, or the
 mm:ss format.
 
 ### Even number of sides
-If an even number of sides is required use '-e' or '--even'.
+If an even number of sides is required use `-e` or `--even`.
 
 ### Re-ordering tracks
-If maintaining the original track order is not necessary use '-s' or 
-'--shuffle'. This allows the software to shuffle the order of the tracks to
+If maintaining the original track order is not necessary use `-s` or 
+`--shuffle`. This allows the software to shuffle the order of the tracks to
 achieve the best balance of time possible. This uses a very different
-algorithm and takes considerably longer, so setting '--timeout' may be
+algorithm and takes considerably longer, so setting `--timeout` may be
 necessary to get the best results.
 
 ### Disabling the time formatting
-If displaying lengths in seconds instead of hh:mm:ss is required use '-p' or
-'--plain'. This may be easier to process or is useful if items other than
+If displaying lengths in seconds instead of hh:mm:ss is required use `-p` or
+`--plain`. This may be easier to process or is useful if items other than
 tracks are to be balanced.
 
 ### Comma separated values output
-If output as comma separated values is required use '-c' or '--csv'. This is 
+If output as comma separated values is required use `-c` or `--csv`. This is 
 useful when output is to be processed by another application. The first column
 represents the type and is either the word "Side" or "Track". The second column
 is the total length of the side or the length of the track. The third column is
