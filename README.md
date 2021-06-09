@@ -27,7 +27,7 @@ With 'TrackSort' compiled the following command will display the help page:
     $ ./TrackSort -h
     Usage: ./TrackSort [Options]
 
-    Splits a list of tracks across multiple discs of a given length.
+    Splits a list of tracks across multiple sides of a given length.
 
     Options:
             -h --help               This help page and nothing else.

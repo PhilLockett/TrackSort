@@ -45,7 +45,7 @@ int Configuration::help(const char * const name)
 {
     std::cout << "Usage: " << name << " [Options]\n";
     std::cout << '\n';
-    std::cout << "  Splits a list of tracks across multiple discs of a given length.\n";
+    std::cout << "  Splits a list of tracks across multiple sides of a given length.\n";
     std::cout << '\n';
     std::cout << "  Options:\n";
     std::cout << "\t-h --help \t\tThis help page and nothing else.\n";
