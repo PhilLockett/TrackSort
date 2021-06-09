@@ -8,7 +8,18 @@
 This utility reads a text file containing a list of track lengths and titles
 and splits them across multiple 'sides' based on the options provided.
 
+A more generic description could be that it reads a list of values and labels
+and balances these across multiple containers. Use the '-p' option to display
+the values as integers.
+
 To use 'TrackSort' you will need a C++ compiler and 'make' utility installed. 
+
+## Cloning and compiling
+To clone and compile this code, execute the following unix/linux commands:
+
+    git clone https://github.com/PhilLockett/TrackSort.git
+    cd TrackSort/
+    make
 
 ## Usage
 With 'TrackSort' compiled the following command will display the help page:
@@ -85,13 +96,6 @@ use the same format throughout.
     00:02:42	Good Morning Good Morning
     1:18	Sgt. Pepper's Lonely Hearts Club Band (Reprise)
     5:38	A Day in the Life
-
-## Cloning and compiling
-To clone and compile this code, execute the following unix/linux commands:
-
-    git clone https://github.com/PhilLockett/TrackSort.git
-    cd TrackSort/
-    make
 
 ## Points of interest
 This code has the following points of interest:
