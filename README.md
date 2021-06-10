@@ -8,9 +8,9 @@
 This utility reads a text file containing a list of track lengths and titles
 and splits them across multiple 'sides' based on the options provided.
 
-A more generic description could be that it reads a list of values and labels
-and balances these across multiple containers. Use the `-p` option to display
-the values as integers.
+A more generic description could be that it reads a list of values with labels
+(tracks) and balances these across multiple containers (sides). Use the `-p`
+option to display the values as integers.
 
 To use `TrackSort` you will need a C++ compiler and `make` utility installed. 
 
@@ -66,7 +66,7 @@ If a specific number of sides is required use `-b` or `--boxes` followed by the
 number required. This option and the `-d` option are mutually exclusive.
 
 ### Re-ordering tracks
-If maintaining the original track order is not necessary use `-s` or 
+If maintaining the original track order is not necessary use `-s` or
 `--shuffle`. This allows the software to shuffle the order of the tracks to
 achieve the best balance of time possible. This uses a very different
 algorithm and takes considerably longer, so setting `--timeout` may be
