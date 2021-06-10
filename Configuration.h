@@ -42,24 +42,26 @@ class Configuration
 {
 private:
 //- Hide the default constructor and destructor.
-    Configuration(void) : inputFile{}, seconds{}, timeout{60}, even{}, shuffle{}, plain{}, csv{}, debug{} {  }
+    Configuration(void) : inputFile{}, timeout{60}, seconds{}, even{}, boxes{}, shuffle{}, plain{}, csv{}, debug{} {  }
     virtual ~Configuration(void) {}
 
     void display(std::ostream &os) const;
 
     std::filesystem::path inputFile;
-    size_t seconds;
     size_t timeout;
+    size_t seconds;
     bool even;
+    size_t boxes;
     bool shuffle;
     bool plain;
     bool csv;
     bool debug;
 
     void setInputFile(std::string name) { inputFile = name; }
-    void setDuration(std::string time) { seconds = timeStringToSeconds(time); }
     void setTimeout(std::string time) { timeout = timeStringToSeconds(time); }
+    void setDuration(std::string time) { seconds = timeStringToSeconds(time); }
     void enableEven() { even = true; }
+    void setBoxes(std::string count) { boxes = std::stoi(count); }
     void enableShuffle() { shuffle = true; }
     void enablePlain() { plain = true; }
     void enableCSV() { csv = true; }
@@ -79,9 +81,10 @@ public:
     static Configuration & instance() { static Configuration neo; return neo; }
 
     static std::filesystem::path & getInputFile(void) { return Configuration::instance().inputFile; }
-    static size_t getDuration(void) { return Configuration::instance().seconds; }
     static size_t getTimeout(void) { return Configuration::instance().timeout; }
+    static size_t getDuration(void) { return Configuration::instance().seconds; }
     static bool isEven(void) { return Configuration::instance().even; }
+    static size_t getBoxes(void) { return Configuration::instance().boxes; }
     static bool isShuffle(void) { return Configuration::instance().shuffle; }
     static bool isPlain(void) { return Configuration::instance().plain; }
     static bool isCSV(void) { return Configuration::instance().csv; }

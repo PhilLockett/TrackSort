@@ -50,9 +50,10 @@ int Configuration::help(const char * const name)
     std::cout << "  Options:\n";
     std::cout << "\t-h --help \t\tThis help page and nothing else.\n";
     std::cout << "\t-i --input <file> \tInput file name containing the track listing.\n";
-    std::cout << "\t-d --duration <seconds>\tMaximum length of each side.\n";
     std::cout << "\t-t --timeout <seconds> \tThe maximum time to spend looking.\n";
+    std::cout << "\t-d --duration <seconds>\tMaximum length of each side.\n";
     std::cout << "\t-e --even\t\tRequire an even number of sides.\n";
+    std::cout << "\t-b --boxes <count> \tMaximum number of containers (sides).\n";
     std::cout << "\t-s --shuffle\t\tRe-order tracks for optimal fit.\n";
     std::cout << "\t-p --plain\t\tDisplay lengths in seconds instead of hh:mm:ss.\n";
     std::cout << "\t-c --csv\t\tGenerate output as comma separated variables.\n";
@@ -86,9 +87,10 @@ int Configuration::parseCommandLine(int argc, char *argv[])
         static struct option long_options[] = {
             {"help",    no_argument,0,'h'},
             {"input",   required_argument,0,'i'},
-            {"duration",  required_argument,0,'d'},
             {"timeout",  required_argument,0,'t'},
+            {"duration",  required_argument,0,'d'},
             {"even",    no_argument,0,'e'},
+            {"boxes",  required_argument,0,'b'},
             {"shuffle", no_argument,0,'s'},
             {"plain",    no_argument,0,'p'},
             {"csv", no_argument,0,'c'},
@@ -96,7 +98,7 @@ int Configuration::parseCommandLine(int argc, char *argv[])
             {0,0,0,0}
         };
 
-        optchr = getopt_long(argc, argv ,"hi:d:t:espcx", long_options, &option_index);
+        optchr = getopt_long(argc, argv ,"hi:t:d:eb:spcx", long_options, &option_index);
         if (optchr == -1)
             return 0;
 
@@ -104,9 +106,10 @@ int Configuration::parseCommandLine(int argc, char *argv[])
         {
             case 'h': return help(argv[0]);
             case 'i': setInputFile(std::string(optarg)); break;
-            case 'd': setDuration(std::string(optarg)); break;
             case 't': setTimeout(std::string(optarg)); break;
+            case 'd': setDuration(std::string(optarg)); break;
             case 'e': enableEven(); break;
+            case 'b': setBoxes(std::string(optarg)); break;
             case 's': enableShuffle(); break;
             case 'p': enablePlain(); break;
             case 'c': enableCSV(); break;
@@ -155,10 +158,11 @@ void Configuration::display(std::ostream &os) const
 {
     os << "Config is " << std::string{isValid() ? "" : "NOT "} << "valid\n";
     os << "Input file name:  " << getInputFile() << '\n';
-    os << "Disc duration: " << getDuration() << "s\n";
     os << "Timeout: " << getTimeout() << "s\n";
+    os << "Disc duration: " << getDuration() << "s\n";
     if (isEven())
         os << "An even number of sides requested.\n";
+    os << "Boxes: " << getBoxes() << "\n";
     if (isShuffle())
         os << "Optimal reordering of tracks requested.\n";
     if (isPlain())
@@ -197,10 +201,12 @@ bool Configuration::isValid(bool showErrors)
         return false;
     }
 
-    if (getDuration() == 0)
+    auto duration{getDuration()};
+    auto boxes{getBoxes()};
+    if (((duration == 0) && (boxes == 0)) || ((duration != 0) && (boxes != 0)))
     {
         if (showErrors)
-            std::cerr << "\nDisc length must be specified\n";
+            std::cerr << "\nEither duration or sides (boxes) must be specified, but not both\n";
         
         return false;
     }
