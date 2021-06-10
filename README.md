@@ -55,7 +55,7 @@ mm:ss format.
 ### Side length
 To specify the maximum length of a side use `-d` or `--duration` and specify
 the number of seconds. The duration can also be specified using the hh:mm:ss
-format, or the mm:ss format. This option and the `b` option are mutually
+format, or the mm:ss format. This option and the `-b` option are mutually
 exclusive.
 
 ### Even number of sides
@@ -63,7 +63,7 @@ If an even number of sides is required use `-e` or `--even`.
 
 ### Number of sides
 If a specific number of sides is required use `-b` or `--boxes` followed by the
-number required. This option and the `d` option are mutually exclusive.
+number required. This option and the `-d` option are mutually exclusive.
 
 ### Re-ordering tracks
 If maintaining the original track order is not necessary use `-s` or 
