@@ -32,12 +32,13 @@ With `TrackSort` compiled the following command will display the help page:
     Options:
             -h --help               This help page and nothing else.
             -i --input <file>       Input file name containing the track listing.
-            -d --duration <seconds> Maximum length of each side.
             -t --timeout <seconds>  The maximum time to spend looking.
+            -d --duration <seconds> Maximum length of each side.
             -e --even               Require an even number of sides.
+            -b --boxes <count>      Maximum number of containers (sides).
             -s --shuffle            Re-order tracks for optimal fit.
             -p --plain              Display lengths in seconds instead of hh:mm:ss.
-            -c --csv                Generate output as comma separated values.
+            -c --csv                Generate output as comma separated variables.
 
 ### Track list file (mandatory)
 The text file containing the track list is specified using `-i` or `--input`.
@@ -45,19 +46,24 @@ Each line of the text file has the track length followed by the track title.
 The track length can be specified using the hh:mm:ss format, but can also use
 mm:ss format or simply as seconds.
 
-### Side length (mandatory)
-To specify the maximum length of a side use `-d` or `--duration` and specify
-the number of seconds. The duration can also be specified using the hh:mm:ss
-format, or the mm:ss format.
-
 ### Maximum processing timeout
 By default the software takes a maximum of 60 seconds to order the tracks. To
 change this timeout limit use `-t` or `--timeout` and specify the number of
 seconds. The timeout can also be specified using the hh:mm:ss format, or the
 mm:ss format.
 
+### Side length
+To specify the maximum length of a side use `-d` or `--duration` and specify
+the number of seconds. The duration can also be specified using the hh:mm:ss
+format, or the mm:ss format. This option and the `b` option are mutually
+exclusive.
+
 ### Even number of sides
 If an even number of sides is required use `-e` or `--even`.
+
+### Number of sides
+If a specific number of sides is required use `-b` or `--boxes` followed by the
+number required. This option and the `d` option are mutually exclusive.
 
 ### Re-ordering tracks
 If maintaining the original track order is not necessary use `-s` or 

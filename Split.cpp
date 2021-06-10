@@ -129,29 +129,57 @@ int splitTracksAcrossSides(void)
     auto lambda = [](size_t a, const Track & b) { return a + b.getValue(); };
     size_t total = std::accumulate(tracks.begin(), tracks.end(), 0, lambda);
 
-    // Get user requested maximum side length.
-    const size_t duration{Configuration::getDuration()};
-
     // Get (user requested) timeout.
     const size_t timeout{Configuration::getTimeout()};
 
-    // Calculate 'packed' sides -> minimum sides needed.
+    // Get user requested maximum side length.
+    size_t duration{Configuration::getDuration()};
+
+    // The user requested number of sides (boxes).
+    const size_t boxes{Configuration::getBoxes()};
+
+    // The list of sides containing a list of tracks.
     std::vector<Side> sides{};
-    sides = addTracksToSides(tracks, duration);
 
-    // Calculate number of sides required.
-    size_t optimum{sides.size()};
-    if ((optimum & 1) && (Configuration::isEven()))
-        optimum++;
+    // The number of sides required.
+    size_t optimum{};
 
-    // Calculate minimum side length.
-    size_t length{total/optimum};
+    // The minimum side length.
+    size_t length{};
+
+    if (duration)
+    {
+        // Calculate 'packed' sides -> minimum sides needed.
+        sides = addTracksToSides(tracks, duration);
+
+        // Calculate number of sides required.
+        optimum = sides.size();
+        if ((optimum & 1) && (Configuration::isEven()))
+            optimum++;
+
+        // Calculate minimum side length.
+        length = total / optimum;
+    }
+    else
+    {
+        optimum = boxes;
+
+        // Calculate minimum side length.
+        length = total / optimum;
+
+        auto comp = [](const Track & a, const Track & b) { return a.getValue() < b.getValue(); };
+        auto max = max_element(tracks.begin(), tracks.end(), comp);
+
+        duration = length + (*max).getValue();
+    }
+
 
     if (showDebug)
     {
         std::cout << "Total duration " << secondsToTimeString(total) << "\n";
-        std::cout << "Required duration " << secondsToTimeString(duration) << "\n";
         std::cout << "Required timeout " << secondsToTimeString(timeout) << "\n";
+        std::cout << "Required duration " << secondsToTimeString(duration) << "\n";
+        std::cout << "Required side count " << boxes << "\n";
         std::cout << "Optimum number of sides " << optimum << "\n";
         std::cout << "Minimum side length " << secondsToTimeString(length) << "\n";
     }

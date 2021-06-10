@@ -312,29 +312,49 @@ int shuffleTracksAcrossSides(void)
 
     // Read track list file and sort it, longest to shortest.
     std::vector<Track> tracks = buildTrackListFromInputFile(Configuration::getInputFile());
-    std::sort(tracks.begin(), tracks.end(), [](const Track & a, const Track & b) {
-        return a.getValue() > b.getValue();
-    });
+    auto comp = [](const Track & a, const Track & b) { return a.getValue() > b.getValue(); };
+    std::sort(tracks.begin(), tracks.end(), comp);
 
     // Calculate total play time.
     auto lambda = [](size_t a, const Track & b) { return a + b.getValue(); };
     size_t total = std::accumulate(tracks.begin(), tracks.end(), 0, lambda);
 
-    // Get user requested maximum side length.
-    const size_t duration{Configuration::getDuration()};
-
     // Get (user requested) timeout.
     const size_t timeout{Configuration::getTimeout()};
 
-    // Calculate number of sides required.
-    size_t optimum{total / duration};
-    if (total % duration)
-        optimum++;
-    if ((optimum & 1) && (Configuration::isEven()))
-        optimum++;
-        
-    // Calculate minimum side length.
-    size_t length{total/optimum};
+    // Get user requested maximum side length.
+    size_t duration{Configuration::getDuration()};
+
+    // The user requested number of sides (boxes).
+    const size_t boxes{Configuration::getBoxes()};
+
+    // The number of sides required.
+    size_t optimum{};
+
+    // The minimum side length.
+    size_t length{};
+
+    if (duration)
+    {
+        // Calculate number of sides required.
+        optimum = total / duration;
+        if (total % duration)
+            optimum++;
+        if ((optimum & 1) && (Configuration::isEven()))
+            optimum++;
+
+        // Calculate minimum side length.
+        length = total / optimum;
+    }
+    else
+    {
+        optimum = boxes;
+
+        // Calculate minimum side length.
+        length = total / optimum;
+
+        duration = length + (*tracks.begin()).getValue();
+    }
 
     if (showDebug)
     {

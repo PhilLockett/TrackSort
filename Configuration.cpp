@@ -211,6 +211,12 @@ bool Configuration::isValid(bool showErrors)
         return false;
     }
 
+    if ((boxes != 0) && (isEven()))
+    {
+        if (showErrors)
+            std::cerr << "\nNumber of side specified as " << boxes << ", so even flag is ignored.\n";
+    }
+
     return true;
 }
 
