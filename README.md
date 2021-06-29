@@ -39,6 +39,7 @@ With `TrackSort` compiled the following command will display the help page:
             -s --shuffle            Re-order tracks for optimal fit.
             -p --plain              Display lengths in seconds instead of hh:mm:ss.
             -c --csv                Generate output as comma separated variables.
+            -a --divider <char>     Character used to separate csv fields.
 
 ### Track list file (mandatory)
 The text file containing the track list is specified using `-i` or `--input`.
@@ -82,7 +83,9 @@ If output as comma separated values is required use `-c` or `--csv`. This is
 useful when output is to be processed by another application. The first column
 represents the type and is either the word "Side" or "Track". The second column
 is the total length of the side or the length of the track. The third column is
-a label indicating the side number or the track title.
+a label indicating the side number or the track title. By default the values
+are separated by a comma, but this can be changed using the `-a` or `--divider`
+followed by the character to use (which may need to be singularly quoted).
 
 ### Example track list
 The following track list example shows various ways of representing the length
