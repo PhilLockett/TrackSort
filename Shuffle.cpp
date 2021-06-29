@@ -261,9 +261,10 @@ std::string Finder::trackToString(size_t track, bool plain, bool csv) const
     std::string time{plain ? std::to_string(seconds) : secondsToTimeString(seconds)};
 
     const std::string title{tracks[track].getTitle()};
+    const std::string c{Configuration::getDivider()};
     std::string s{};
     if (csv)
-        s = "Track, " + time + ", \"" + title + "\""; 
+        s = "Track" + c + time + c + "\"" + title + "\"" + c;
     else
         s = time + " - " + title;
 
@@ -278,11 +279,13 @@ std::string Finder::sideToString(const std::vector<size_t> & side, const std::st
 
     std::string time{plain ? std::to_string(seconds) : secondsToTimeString(seconds)};
 
+    const std::string c{Configuration::getDivider()};
     std::string s{};
     if (csv)
-        s = "Side, " + time + ", \"" + title + " - " + std::to_string(side.size()) + " tracks\"\n";
+        s = "Side" + c + time + c + "\"" + title + ", " + std::to_string(side.size()) + " tracks\"" + c;
     else
-        s = title + " - " + std::to_string(side.size()) + " tracks\n";
+        s = title + " - " + std::to_string(side.size()) + " tracks";
+    s += '\n';
 
     for (const auto & track : side)
         s += trackToString(track, plain, csv) + "\n";

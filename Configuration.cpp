@@ -57,6 +57,7 @@ int Configuration::help(const char * const name)
     std::cout << "\t-s --shuffle\t\tRe-order tracks for optimal fit.\n";
     std::cout << "\t-p --plain\t\tDisplay lengths in seconds instead of hh:mm:ss.\n";
     std::cout << "\t-c --csv\t\tGenerate output as comma separated variables.\n";
+    std::cout << "\t-a --divider <char> \tCharacter used to separate csv fields.\n";
 
     return 1;
 }
@@ -94,11 +95,12 @@ int Configuration::parseCommandLine(int argc, char *argv[])
             {"shuffle", no_argument,0,'s'},
             {"plain",    no_argument,0,'p'},
             {"csv", no_argument,0,'c'},
+            {"divider",   required_argument,0,'a'},
             {"debug",   no_argument,0,'x'},
             {0,0,0,0}
         };
 
-        optchr = getopt_long(argc, argv ,"hi:t:d:eb:spcx", long_options, &option_index);
+        optchr = getopt_long(argc, argv ,"hi:t:d:eb:spca:x", long_options, &option_index);
         if (optchr == -1)
             return 0;
 
@@ -113,6 +115,7 @@ int Configuration::parseCommandLine(int argc, char *argv[])
             case 's': enableShuffle(); break;
             case 'p': enablePlain(); break;
             case 'c': enableCSV(); break;
+            case 'a': setDivider(std::string(optarg)); break;
             case 'x': enableDebug(); break;
 
             default:
@@ -168,7 +171,7 @@ void Configuration::display(std::ostream &os) const
     if (isPlain())
         os << "Display lengths in seconds instead of hh:mm:ss.\n";
     if (isCSV())
-        os << "Comma separated variable output requested.\n";
+        os << "Comma separated variable output requested separated by " << getDivider() << ".\n";
 }
 
 /**

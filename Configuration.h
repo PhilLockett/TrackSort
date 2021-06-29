@@ -42,7 +42,7 @@ class Configuration
 {
 private:
 //- Hide the default constructor and destructor.
-    Configuration(void) : inputFile{}, timeout{60}, seconds{}, even{}, boxes{}, shuffle{}, plain{}, csv{}, debug{} {  }
+    Configuration(void) : inputFile{}, timeout{60}, seconds{}, even{}, boxes{}, shuffle{}, plain{}, csv{}, divider{','}, debug{} {  }
     virtual ~Configuration(void) {}
 
     void display(std::ostream &os) const;
@@ -55,6 +55,7 @@ private:
     bool shuffle;
     bool plain;
     bool csv;
+    char divider;
     bool debug;
 
     void setInputFile(std::string name) { inputFile = name; }
@@ -65,6 +66,7 @@ private:
     void enableShuffle() { shuffle = true; }
     void enablePlain() { plain = true; }
     void enableCSV() { csv = true; }
+    void setDivider(std::string div) { divider = div[0]; }
     void enableDebug(void) { debug = true; }
 
     int help(const char * const name);
@@ -88,6 +90,7 @@ public:
     static bool isShuffle(void) { return Configuration::instance().shuffle; }
     static bool isPlain(void) { return Configuration::instance().plain; }
     static bool isCSV(void) { return Configuration::instance().csv; }
+    static char getDivider(void) { return Configuration::instance().divider; }
     static bool isDebug(void) { return Configuration::instance().debug; }
 
     static bool isValid(bool showErrors = false);

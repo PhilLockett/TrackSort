@@ -26,6 +26,7 @@
 
 #include "Side.h"
 #include "Utilities.h"
+#include "Configuration.h"
 
 
 /**
@@ -56,9 +57,10 @@ std::string Track::toString(bool plain, bool csv) const
 {
     std::string time{plain ? std::to_string(seconds) : secondsToTimeString(seconds)};
 
+    const std::string c{Configuration::getDivider()};
     std::string s{};
     if (csv)
-        s = "Track, " + time + ", \"" + title + "\""; 
+        s = "Track" + c + time + c + "\"" + title + "\"" + c;
     else
         s = time + " - " + title;
 
@@ -87,11 +89,13 @@ std::string Side::toString(bool plain, bool csv) const
 {
     std::string time{plain ? std::to_string(seconds) : secondsToTimeString(seconds)};
 
+    const std::string c{Configuration::getDivider()};
     std::string s{};
     if (csv)
-        s = "Side, " + time + ", \"" + title + " - " + std::to_string(size()) + " tracks\"\n";
+        s = "Side" + c + time + c + "\"" + title + ", " + std::to_string(size()) + " tracks\"" + c;
     else
-        s = title + " - " + std::to_string(size()) + " tracks\n";
+        s = title + " - " + std::to_string(size()) + " tracks";
+    s += '\n';
 
     for (const auto & track : tracks)
         s += track.toString(plain, csv) + "\n";
