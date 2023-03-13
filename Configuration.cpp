@@ -24,10 +24,10 @@
  * Implementation of the track splitter command line configuration Singleton.
  */
 
-#include <getopt.h>
 #include <future>
 #include <iostream>
 
+#include "Opts.h"
 #include "Configuration.h"
 
 
@@ -36,30 +36,62 @@
  */
 
 /**
+ * Display version message.
+ *
+ * @param  name - of application.
+ */
+int Configuration::version(void) const
+{
+    std::cout << "Version 1.0 of " << name << '\n';
+
+    return 2;
+}
+
+const Opts::OptsType optList
+{
+    { 'h', "help",      NULL,       "This help page and nothing else." },
+    { 'v', "version", NULL,         "Display version." },
+    { 'i', "input",     "file",     "Input file name containing the track listing." },
+    { 't', "timeout",   "seconds",  "The maximum time to spend looking." },
+    { 'd', "duration",  "seconds",  "Maximum length of each side." },
+    { 'e', "even",      NULL,       "Require an even number of sides." },
+    { 'b', "boxes",     "count",    "Maximum number of containers (sides)." },
+    { 's', "shuffle",   NULL,       "Re-order tracks for optimal fit." },
+    { 'p', "plain",     NULL,       "Display lengths in seconds instead of hh:mm:ss." },
+    { 'c', "csv",       NULL,       "Generate output as comma separated variables." },
+    { 'a', "divider",   "char",     "Character used to separate csv fields." },
+    { 'x', NULL,        NULL,       NULL },
+
+};
+Opts optSet{optList, "    "};
+
+/**
  * @brief Display help message.
  * 
  * @param name of application.
  * @return auto indicate processing should be aborted.
  */
-int Configuration::help(const char * const name)
+int Configuration::help(const std::string & error) const
 {
     std::cout << "Usage: " << name << " [Options]\n";
     std::cout << '\n';
     std::cout << "  Splits a list of tracks across multiple sides of a given length.\n";
     std::cout << '\n';
     std::cout << "  Options:\n";
-    std::cout << "\t-h --help \t\tThis help page and nothing else.\n";
-    std::cout << "\t-i --input <file> \tInput file name containing the track listing.\n";
-    std::cout << "\t-t --timeout <seconds> \tThe maximum time to spend looking.\n";
-    std::cout << "\t-d --duration <seconds>\tMaximum length of each side.\n";
-    std::cout << "\t-e --even\t\tRequire an even number of sides.\n";
-    std::cout << "\t-b --boxes <count> \tMaximum number of containers (sides).\n";
-    std::cout << "\t-s --shuffle\t\tRe-order tracks for optimal fit.\n";
-    std::cout << "\t-p --plain\t\tDisplay lengths in seconds instead of hh:mm:ss.\n";
-    std::cout << "\t-c --csv\t\tGenerate output as comma separated variables.\n";
-    std::cout << "\t-a --divider <char> \tCharacter used to separate csv fields.\n";
+    std::cout << optSet;
 
-    return 1;
+    if (error.empty())
+        return 1;
+
+    std::cerr << "\nError: " << error << "\n";
+
+    if (optSet.isErrors())
+    {
+        std::cerr << "\n";
+        optSet.streamErrors(std::cout);
+    }
+
+    return -1;
 }
 
 
@@ -73,57 +105,36 @@ int Configuration::help(const char * const name)
  */
 int Configuration::parseCommandLine(int argc, char *argv[])
 {
+    setName(argv[0]);
     if (argc < 2)
+        return help("valid arguments required.");
+
+    optSet.process(argc, argv);
+    if (optSet.isErrors())
+        return help("valid arguments required.");
+
+    for (const auto & option : optSet)
     {
-        help(argv[0]);
-
-        return -1;
-    }
-
-    while (1)
-    {
-        int option_index = 0;
-        int optchr;
-
-        static struct option long_options[] = {
-            {"help",    no_argument,0,'h'},
-            {"input",   required_argument,0,'i'},
-            {"timeout",  required_argument,0,'t'},
-            {"duration",  required_argument,0,'d'},
-            {"even",    no_argument,0,'e'},
-            {"boxes",  required_argument,0,'b'},
-            {"shuffle", no_argument,0,'s'},
-            {"plain",    no_argument,0,'p'},
-            {"csv", no_argument,0,'c'},
-            {"divider",   required_argument,0,'a'},
-            {"debug",   no_argument,0,'x'},
-            {0,0,0,0}
-        };
-
-        optchr = getopt_long(argc, argv ,"hi:t:d:eb:spca:x", long_options, &option_index);
-        if (optchr == -1)
-            return 0;
-
-        switch (optchr)
+        switch (option.getOpt())
         {
-            case 'h': return help(argv[0]);
-            case 'i': setInputFile(std::string(optarg)); break;
-            case 't': setTimeout(std::string(optarg)); break;
-            case 'd': setDuration(std::string(optarg)); break;
-            case 'e': enableEven(); break;
-            case 'b': setBoxes(std::string(optarg)); break;
-            case 's': enableShuffle(); break;
-            case 'p': enablePlain(); break;
-            case 'c': enableCSV(); break;
-            case 'a': setDivider(std::string(optarg)); break;
-            case 'x': enableDebug(); break;
+        case 'h': return help("");
+        case 'v': return version();
 
-            default:
-                help(argv[0]);
+        case 'i': setInputFile(option.getArg()); break;
+        case 't': setTimeout(option.getArg()); break;
+        case 'd': setDuration(option.getArg()); break;
+        case 'e': enableEven(); break;
+        case 'b': setBoxes(option.getArg()); break;
+        case 's': enableShuffle(); break;
+        case 'p': enablePlain(); break;
+        case 'c': enableCSV(); break;
+        case 'a': setDivider(option.getArg()); break;
 
-                return -1;
-        }//end switch
-    }//end while
+        case 'x': enableDebug(); break;
+
+        default: return help("internal error.");
+        }
+    }
 
     return 0;
 }

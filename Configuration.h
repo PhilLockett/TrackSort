@@ -42,11 +42,15 @@ class Configuration
 {
 private:
 //- Hide the default constructor and destructor.
-    Configuration(void) : inputFile{}, timeout{60}, seconds{}, even{}, boxes{}, shuffle{}, plain{}, csv{}, divider{','}, debug{} {  }
+    Configuration(void) : 
+        name{"TrackSort"}, inputFile{}, timeout{60}, seconds{}, even{},
+        boxes{}, shuffle{}, plain{}, csv{}, divider{','}, debug{}
+        {  }
     virtual ~Configuration(void) {}
 
     void display(std::ostream &os) const;
 
+    std::string name;
     std::filesystem::path inputFile;
     size_t timeout;
     size_t seconds;
@@ -58,6 +62,7 @@ private:
     char divider;
     bool debug;
 
+    void setName(std::string value) { name = value; }
     void setInputFile(std::string name) { inputFile = name; }
     void setTimeout(std::string time) { timeout = timeStringToSeconds(time); }
     void setDuration(std::string time) { seconds = timeStringToSeconds(time); }
@@ -69,7 +74,8 @@ private:
     void setDivider(std::string div) { divider = div[0]; }
     void enableDebug(void) { debug = true; }
 
-    int help(const char * const name);
+    int help(const std::string & error) const;
+    int version(void) const;
     int parseCommandLine(int argc, char *argv[]);
 
 public:
@@ -82,6 +88,7 @@ public:
 
     static Configuration & instance() { static Configuration neo; return neo; }
 
+    static std::string & getName(void) { return instance().name; }
     static std::filesystem::path & getInputFile(void) { return Configuration::instance().inputFile; }
     static size_t getTimeout(void) { return Configuration::instance().timeout; }
     static size_t getDuration(void) { return Configuration::instance().seconds; }
