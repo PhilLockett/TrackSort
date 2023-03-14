@@ -89,16 +89,16 @@ public:
     static Configuration & instance() { static Configuration neo; return neo; }
 
     static std::string & getName(void) { return instance().name; }
-    static std::filesystem::path & getInputFile(void) { return Configuration::instance().inputFile; }
-    static size_t getTimeout(void) { return Configuration::instance().timeout; }
-    static size_t getDuration(void) { return Configuration::instance().seconds; }
-    static bool isEven(void) { return Configuration::instance().even; }
-    static size_t getBoxes(void) { return Configuration::instance().boxes; }
-    static bool isShuffle(void) { return Configuration::instance().shuffle; }
-    static bool isPlain(void) { return Configuration::instance().plain; }
-    static bool isCSV(void) { return Configuration::instance().csv; }
-    static char getDivider(void) { return Configuration::instance().divider; }
-    static bool isDebug(void) { return Configuration::instance().debug; }
+    static std::filesystem::path & getInputFile(void) { return instance().inputFile; }
+    static size_t getTimeout(void) { return instance().timeout; }
+    static size_t getDuration(void) { return instance().seconds; }
+    static bool isEven(void) { return instance().even; }
+    static size_t getBoxes(void) { return instance().boxes; }
+    static bool isShuffle(void) { return instance().shuffle; }
+    static bool isPlain(void) { return instance().plain; }
+    static bool isCSV(void) { return instance().csv; }
+    static char getDivider(void) { return instance().divider; }
+    static bool isDebug(void) { return instance().debug; }
 
     static bool isValid(bool showErrors = false);
 
