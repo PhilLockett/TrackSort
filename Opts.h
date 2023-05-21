@@ -1,5 +1,5 @@
 /**
- * @file    LongOpts.h
+ * @file    Opts.h
  * @author  Phil Lockett <phillockett65@gmail.com>
  * @version 1.0
  *
@@ -33,29 +33,31 @@
 class Opt
 {
 private:
-    const int    val;
+    const int    id;
     const char * name;
     const char * arg;
-    const char * desc;
+    const std::string desc;
 
 public:
-    Opt(int v, const char * n, const char * a, const char * d) : val{v}, name{n}, arg{a}, desc{d}
+    Opt(int v, const char * n, const char * a, const std::string & d) : id{v}, name{n}, arg{a}, desc{d}
     {}
 
-    int getValInt(void) const { return val; }
-    char getVal(void) const { return (char)val; }
+    int getIdInt(void) const { return id; }
+    char getId(void) const { return (char)id; }
 
     const char * getName(void) const { return name; }
     const char * getArg(void) const { return arg; }
-    const char * getDesc(void) const { return desc; }
+    const char * getDesc(void) const { return desc.c_str(); }
 
     std::string getNameString(void) const { return std::string(getName()); }
     std::string getArgString(void) const { return std::string(getArg()); }
-    std::string getDescString(void) const { return std::string(getDesc()); }
+    const std::string & getDescString(void) const { return desc; }
 
+    bool isVal(void) const { return isalnum(id); }
+    bool isSpacer(void) const { return getIdInt() == 0; }
     bool isName(void) const { return getName() != NULL; }
     bool isArg(void) const { return getArg() != NULL; }
-    bool isDesc(void) const { return getDesc() != NULL; }
+    bool isDesc(void) const { return !getDescString().empty(); }
 
     int getNameLen(void) const { return strlen(getName()); }
     int getArgLen(void) const { return strlen(getArg()); }
@@ -84,9 +86,9 @@ public:
      * 
      * @return int the current option character.
      */
-    int getOpt(void) const { return iter->getValInt(); }
-    int getValInt(void) const { return iter->getValInt(); }
-    char getVal(void) const { return iter->getVal(); }
+    int getOpt(void) const { return iter->getIdInt(); }
+    int getIdInt(void) const { return iter->getIdInt(); }
+    char getId(void) const { return iter->getId(); }
 
 
     const char * getArgPtr(void) const { return arg; }
@@ -97,6 +99,8 @@ public:
      * @return std::string the argument.
      */
     const std::string getArg(void) const { return std::string(getArgPtr()); }
+    const int getArgInt(void) const { return atoi(getArgPtr()); }
+    const float getArgFloat(void) const { return atof(getArgPtr()); }
 
     /**
      * @brief Indicate if the current option has an argument.
@@ -113,7 +117,7 @@ public:
      */
     std::string getLong(void) const { return iter->getNameString(); }
 
-    bool isShort(void) const { return iter->getValInt(); }
+    bool isShort(void) const { return iter->getIdInt(); }
     bool isLong(void) const { return iter->isName(); }
     std::string getArgName(void) const { return iter->getArgString(); }
     std::string getDesc(void) const { return iter->getDescString(); }

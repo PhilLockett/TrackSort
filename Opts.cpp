@@ -1,5 +1,5 @@
 /**
- * @file    Portal.cpp
+ * @file    Opts.cpp
  * @author  Phil Lockett <phillockett65@gmail.com>
  * @version 1.0
  *
@@ -41,6 +41,9 @@ void Opts::display(std::ostream &os) const
     size_t longest{};
     for (const Opt & i : options)
     {
+        if (i.isSpacer())
+            continue;
+
         int length{1};
         if (i.isName())
             length += i.getNameLen() + 2;
@@ -57,10 +60,20 @@ void Opts::display(std::ostream &os) const
     // Output options.
     for (const Opt & i : options)
     {
+        if (i.isSpacer())
+        {
+            os << "\n";
+            continue;
+        }
+
         if (!i.isDesc())
             continue;
 
-        os << indent << "-" << i.getVal() << " ";
+        os << indent;
+        if (i.isVal())
+            os << "-" << i.getId() << " ";
+        else
+            os << "   ";
 
         std::string work{};
         if (i.isName())
@@ -72,13 +85,16 @@ void Opts::display(std::ostream &os) const
         work += padding;
         const std::string_view view{work.c_str(), longest};
 
-        os << view << i.getDesc() << "\n";
+        os << view << i.getDescString() << "\n";
     }
 }
 
 Opts::OptIter Opts::find(char v) const
 {
-    auto is = [v](const Opt & p) { return p.getVal() == v; };
+    if (v <= 0)
+        return std::end(options);
+
+    auto is = [v](const Opt & p) { return p.getId() == v; };
 
     return std::find_if(std::begin(options), std::end(options), is);
 }
