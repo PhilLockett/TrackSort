@@ -89,7 +89,7 @@ int Configuration::help(const std::string & error) const
     if (optSet.isErrors())
     {
         std::cerr << "\n";
-        optSet.streamErrors(std::cout);
+        optSet.streamErrors(std::cerr);
     }
 
     return -1;
