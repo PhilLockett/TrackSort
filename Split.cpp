@@ -27,6 +27,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <algorithm>
 
 #include "Side.h"
 #include "Utilities.h"
@@ -168,7 +169,7 @@ int splitTracksAcrossSides(void)
         length = total / optimum;
 
         auto comp = [](const Track & a, const Track & b) { return a.getValue() < b.getValue(); };
-        auto max = max_element(tracks.begin(), tracks.end(), comp);
+        auto max = std::max_element(tracks.begin(), tracks.end(), comp);
 
         duration = length + (*max).getValue();
     }

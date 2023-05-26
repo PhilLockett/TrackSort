@@ -26,6 +26,7 @@
 
 #include <sstream>
 #include <vector>
+#include <thread>
 
 #include "Side.h"
 #include "Utilities.h"
