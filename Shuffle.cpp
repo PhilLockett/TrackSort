@@ -322,20 +322,12 @@ int shuffleTracksAcrossSides(std::vector<Track> & tracks)
     auto lambda = [](size_t a, const Track & b) { return a + b.getValue(); };
     size_t total = std::accumulate(tracks.begin(), tracks.end(), 0, lambda);
 
-    // Get (user requested) timeout.
-    const size_t timeout{Configuration::getTimeout()};
+    const size_t timeout{Configuration::getTimeout()};  // Get (user requested) timeout.
+    size_t duration{Configuration::getDuration()};      // Get user requested maximum side length.
+    const size_t boxes{Configuration::getBoxes()};      // Get user requested number of sides (boxes).
 
-    // Get user requested maximum side length.
-    size_t duration{Configuration::getDuration()};
-
-    // The user requested number of sides (boxes).
-    const size_t boxes{Configuration::getBoxes()};
-
-    // The number of sides required.
-    size_t optimum{};
-
-    // The minimum side length.
-    size_t length{};
+    size_t optimum{};   // The number of sides required.
+    size_t length{};    // The minimum side length.
 
     if (duration)
     {
@@ -367,7 +359,6 @@ int shuffleTracksAcrossSides(std::vector<Track> & tracks)
         std::cout << "Optimum number of sides " << optimum << "\n";
         std::cout << "Minimum side length " << secondsToTimeString(length) << "\n";
     }
-
 
     Finder find{tracks, duration, timeout, optimum};
     find.addTracksToSides();
