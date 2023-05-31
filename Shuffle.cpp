@@ -310,12 +310,11 @@ bool Finder::showAll(std::ostream & os, bool plain, bool csv) const
 }
 
 
-int shuffleTracksAcrossSides(void)
+int shuffleTracksAcrossSides(std::vector<Track> & tracks)
 {
     const auto showDebug{Configuration::isDebug()};
 
-    // Read track list file and sort it, longest to shortest.
-    std::vector<Track> tracks = buildTrackListFromInputFile(Configuration::getInputFile());
+    // Sort track list, longest to shortest.
     auto comp = [](const Track & a, const Track & b) { return a.getValue() > b.getValue(); };
     std::sort(tracks.begin(), tracks.end(), comp);
 

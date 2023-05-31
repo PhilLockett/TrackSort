@@ -119,16 +119,13 @@ static bool isMaximumTooLong(const std::vector<Side> & sides)
  * 
  * @return int error value of 0.
  */
-int splitTracksAcrossSides(void)
+int splitTracksAcrossSides(std::vector<Track> & tracks)
 {
     const auto showDebug{Configuration::isDebug()};
 
-    // Read track list file.
-    std::vector<Track> tracks = buildTrackListFromInputFile(Configuration::getInputFile());
-
     // Calculate total play time.
     auto lambda = [](size_t a, const Track & b) { return a + b.getValue(); };
-    size_t total = std::accumulate(tracks.begin(), tracks.end(), 0, lambda);
+    const size_t total = std::accumulate(tracks.begin(), tracks.end(), 0, lambda);
 
     // Get (user requested) timeout.
     const size_t timeout{Configuration::getTimeout()};
