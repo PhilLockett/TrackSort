@@ -127,7 +127,7 @@ int splitTracksAcrossSides(std::vector<Track> & tracks)
     auto lambda = [](size_t a, const Track & b) { return a + b.getValue(); };
     const size_t total = std::accumulate(tracks.begin(), tracks.end(), 0, lambda);
 
-    const size_t timeout{Configuration::getTimeout()};  // Get (user requested) timeout.
+    const size_t timeout{Configuration::getTimeout()};  // Get user requested timeout.
     size_t duration{Configuration::getDuration()};      // Get user requested maximum side length.
     const size_t boxes{Configuration::getBoxes()};      // Get user requested number of sides (boxes).
 
@@ -137,23 +137,19 @@ int splitTracksAcrossSides(std::vector<Track> & tracks)
 
     if (duration)
     {
-        // Calculate 'packed' sides -> minimum sides needed.
-        sides = addTracksToSides(tracks, duration);
+        sides = addTracksToSides(tracks, duration); // Calculate 'packed' sides -> minimum sides needed.
 
         // Calculate number of sides required.
         optimum = sides.size();
         if ((optimum & 1) && (Configuration::isEven()))
             optimum++;
 
-        // Calculate minimum side length.
-        length = total / optimum;
+        length = total / optimum;       // Calculate minimum side length.
     }
     else
     {
         optimum = boxes;
-
-        // Calculate minimum side length.
-        length = total / optimum;
+        length = total / optimum;       // Calculate minimum side length.
 
         auto comp = [](const Track & a, const Track & b) { return a.getValue() < b.getValue(); };
         auto max = std::max_element(tracks.begin(), tracks.end(), comp);

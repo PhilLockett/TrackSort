@@ -322,7 +322,7 @@ int shuffleTracksAcrossSides(std::vector<Track> & tracks)
     auto lambda = [](size_t a, const Track & b) { return a + b.getValue(); };
     size_t total = std::accumulate(tracks.begin(), tracks.end(), 0, lambda);
 
-    const size_t timeout{Configuration::getTimeout()};  // Get (user requested) timeout.
+    const size_t timeout{Configuration::getTimeout()};  // Get user requested timeout.
     size_t duration{Configuration::getDuration()};      // Get user requested maximum side length.
     const size_t boxes{Configuration::getBoxes()};      // Get user requested number of sides (boxes).
 
@@ -338,15 +338,12 @@ int shuffleTracksAcrossSides(std::vector<Track> & tracks)
         if ((optimum & 1) && (Configuration::isEven()))
             optimum++;
 
-        // Calculate minimum side length.
-        length = total / optimum;
+        length = total / optimum;       // Calculate minimum side length.
     }
     else
     {
         optimum = boxes;
-
-        // Calculate minimum side length.
-        length = total / optimum;
+        length = total / optimum;       // Calculate minimum side length.
 
         duration = length + (*tracks.begin()).getValue();
     }
