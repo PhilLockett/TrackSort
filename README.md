@@ -31,6 +31,8 @@ With `TrackSort` compiled the following command will display the help page:
 
     Options:
             -h --help               This help page and nothing else.
+            -v --version            Display version.
+
             -i --input <file>       Input file name containing the track listing.
             -t --timeout <seconds>  The maximum time to spend looking.
             -d --duration <seconds> Maximum length of each side.
