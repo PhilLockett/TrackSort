@@ -44,7 +44,7 @@ private:
 //- Hide the default constructor and destructor.
     Configuration(void) : 
         name{"TrackSort"}, inputFile{}, timeout{60}, seconds{}, even{},
-        boxes{}, shuffle{}, plain{}, csv{}, divider{','}, debug{}
+        boxes{}, shuffle{}, plain{}, csv{}, delimiter{','}, debug{}
         {  }
     virtual ~Configuration(void) {}
 
@@ -59,7 +59,7 @@ private:
     bool shuffle;
     bool plain;
     bool csv;
-    char divider;
+    char delimiter;
     bool debug;
 
     void setName(std::string value) { name = value; }
@@ -71,7 +71,7 @@ private:
     void enableShuffle() { shuffle = true; }
     void enablePlain() { plain = true; }
     void enableCSV() { csv = true; }
-    void setDivider(std::string div) { divider = div[0]; }
+    void setDivider(std::string div) { delimiter = div[0]; }
     void enableDebug(void) { debug = true; }
 
     int help(const std::string & error) const;
@@ -97,7 +97,7 @@ public:
     static bool isShuffle(void) { return instance().shuffle; }
     static bool isPlain(void) { return instance().plain; }
     static bool isCSV(void) { return instance().csv; }
-    static char getDivider(void) { return instance().divider; }
+    static char getDelimiter(void) { return instance().delimiter; }
     static bool isDebug(void) { return instance().debug; }
 
     static bool isValid(bool showErrors = false);
