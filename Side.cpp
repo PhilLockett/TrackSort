@@ -60,7 +60,7 @@ std::string Track::toString(bool plain, bool csv) const
     const std::string c{Configuration::getDivider()};
     std::string s{};
     if (csv)
-        s = "Track" + c + time + c + "\"" + title + "\"" + c;
+        s = "Track" + c + time + c + "\"" + title + "\"";
     else
         s = time + " - " + title;
 
@@ -92,7 +92,7 @@ std::string Side::toString(bool plain, bool csv) const
     const std::string c{Configuration::getDivider()};
     std::string s{};
     if (csv)
-        s = "Side" + c + time + c + "\"" + title + ", " + std::to_string(size()) + " tracks\"" + c;
+        s = "Side" + c + time + c + "\"" + title + ", " + std::to_string(size()) + " tracks\"";
     else
         s = title + " - " + std::to_string(size()) + " tracks";
     s += '\n';
